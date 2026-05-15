@@ -92,12 +92,7 @@
     transition: box-shadow 0.25s ease, border-color 0.25s ease;
   }
   .game-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: var(--gradient-card);
-    pointer-events: none;
+    content: none;
   }
   .game-card:hover {
     box-shadow: var(--card-shadow-hover);

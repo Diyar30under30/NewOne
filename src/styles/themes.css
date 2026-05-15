@@ -5,27 +5,27 @@
 :root,
 .theme-light {
   /* Backgrounds */
-  --bg-primary:       #FAF7F2;
-  --bg-secondary:     #F2EDE3;
+  --bg-primary:       #F5F0E8;
+  --bg-secondary:     #EDE6D8;
   --bg-card:          #FFFFFF;
-  --bg-card-glass:    rgba(255, 255, 255, 0.92);
-  --bg-paper:         #EDE8DC;
+  --bg-card-glass:    rgba(255, 255, 255, 0.97);
+  --bg-paper:         #E8E0D0;
 
   /* Cells */
-  --bg-cell-closed:   #E8DFD0;
-  --bg-cell-open:     #F5F0E8;
-  --bg-cell-hover:    #DACED8;
+  --bg-cell-closed:   #D8CCBC;
+  --bg-cell-open:     #F0EAE0;
+  --bg-cell-hover:    #C8BAAA;
 
   /* Text */
-  --text-primary:     #3D2C1E;
-  --text-secondary:   #6B5040;
-  --text-muted:       #9A8070;
-  --text-faint:       #C0A898;
+  --text-primary:     #1E1008;
+  --text-secondary:   #4A3020;
+  --text-muted:       #7A6050;
+  --text-faint:       #A89080;
 
   /* Borders */
-  --border-color:     #E2D8CC;
-  --border-glow:      rgba(196, 119, 90, 0.3);
-  --shadow-color:     rgba(80, 50, 30, 0.08);
+  --border-color:     #C8B8A4;
+  --border-glow:      rgba(196, 119, 90, 0.45);
+  --shadow-color:     rgba(80, 50, 30, 0.12);
 
   /* Accents — Terracotta */
   --accent:           #C4775A;
@@ -50,12 +50,12 @@
   --cell-border-dark:  #C8B8A8;
 
   /* UI */
-  --header-bg:        rgba(250, 247, 242, 0.96);
-  --nav-bg:           rgba(255, 255, 255, 0.96);
-  --card-shadow:      0 2px 20px rgba(80, 50, 30, 0.08), 0 1px 0 rgba(255,255,255,0.9) inset;
-  --card-shadow-hover:0 6px 32px rgba(80, 50, 30, 0.14);
-  --glass-bg:         rgba(255, 255, 255, 0.7);
-  --glass-border:     rgba(226, 216, 204, 0.8);
+  --header-bg:        rgba(245, 240, 232, 0.97);
+  --nav-bg:           rgba(255, 255, 255, 0.98);
+  --card-shadow:      0 2px 24px rgba(80, 50, 30, 0.12), 0 1px 0 rgba(255,255,255,1) inset;
+  --card-shadow-hover:0 8px 40px rgba(80, 50, 30, 0.18);
+  --glass-bg:         rgba(255, 255, 255, 0.85);
+  --glass-border:     rgba(200, 184, 164, 0.9);
 
   /* Gradients */
   --gradient-brand:   linear-gradient(135deg, #C4775A 0%, #B86B4E 60%, #A05A3E 100%);
@@ -69,45 +69,45 @@
 ══════════════════════════════════════════════ */
 .dark,
 .theme-dark {
-  --bg-primary:       #1A1510;
-  --bg-secondary:     #231C16;
-  --bg-card:          #2A2018;
-  --bg-card-glass:    rgba(42, 32, 24, 0.92);
-  --bg-paper:         #1E1812;
-  --bg-cell-closed:   #3A2E24;
-  --bg-cell-open:     #1E1812;
-  --bg-cell-hover:    #4A3C30;
-  --text-primary:     #F5EDE0;
-  --text-secondary:   #C8A888;
-  --text-muted:       #8A7060;
-  --text-faint:       #5A4838;
-  --border-color:     rgba(196, 119, 90, 0.18);
-  --border-glow:      rgba(196, 119, 90, 0.35);
-  --shadow-color:     rgba(0, 0, 0, 0.5);
-  --accent:           #D4896C;
-  --accent-dim:       rgba(212, 137, 108, 0.14);
-  --accent-hover:     #C4795C;
-  --accent-glow:      rgba(212, 137, 108, 0.32);
-  --sage:             #8AAE8A;
-  --sage-dim:         rgba(138, 174, 138, 0.14);
-  --sage-hover:       #7A9E7A;
-  --danger:           #D46050;
-  --success:          #6DAE6D;
-  --warning:          #D09050;
-  --mine-bg:          rgba(212, 96, 80, 0.2);
-  --flag-color:       #D4896C;
-  --cell-border-light: rgba(196, 119, 90, 0.2);
-  --cell-border-dark:  #150E08;
-  --header-bg:        rgba(26, 21, 16, 0.95);
-  --nav-bg:           rgba(26, 21, 16, 0.96);
-  --card-shadow:      0 4px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.04) inset;
-  --card-shadow-hover:0 8px 48px rgba(0,0,0,0.55);
-  --glass-bg:         rgba(255, 255, 255, 0.03);
-  --glass-border:     rgba(196, 119, 90, 0.15);
-  --gradient-brand:   linear-gradient(135deg, #C4775A 0%, #B86B4E 60%, #A05A3E 100%);
-  --gradient-sage:    linear-gradient(135deg, #7A9E7A 0%, #668C66 100%);
-  --gradient-card:    linear-gradient(160deg, rgba(255,255,255,0.03) 0%, rgba(196,119,90,0.03) 100%);
-  --gradient-warm:    linear-gradient(135deg, #2A2018, #1E1812);
+  --bg-primary:       #18120E;
+  --bg-secondary:     #2C2118;
+  --bg-card:          #352820;
+  --bg-card-glass:    rgba(53, 40, 32, 0.97);
+  --bg-paper:         #241A12;
+  --bg-cell-closed:   #4A3828;
+  --bg-cell-open:     #241A12;
+  --bg-cell-hover:    #5A4838;
+  --text-primary:     #FFF5E8;
+  --text-secondary:   #DDB890;
+  --text-muted:       #AA8868;
+  --text-faint:       #7A5840;
+  --border-color:     rgba(196, 119, 90, 0.35);
+  --border-glow:      rgba(196, 119, 90, 0.55);
+  --shadow-color:     rgba(0, 0, 0, 0.6);
+  --accent:           #E0956E;
+  --accent-dim:       rgba(224, 149, 110, 0.2);
+  --accent-hover:     #C87850;
+  --accent-glow:      rgba(224, 149, 110, 0.4);
+  --sage:             #8ABE8A;
+  --sage-dim:         rgba(138, 190, 138, 0.18);
+  --sage-hover:       #78AA78;
+  --danger:           #E06858;
+  --success:          #72C272;
+  --warning:          #E0A050;
+  --mine-bg:          rgba(224, 104, 88, 0.25);
+  --flag-color:       #E0956E;
+  --cell-border-light: rgba(196, 119, 90, 0.3);
+  --cell-border-dark:  #0E0A06;
+  --header-bg:        rgba(24, 18, 14, 0.97);
+  --nav-bg:           rgba(24, 18, 14, 0.98);
+  --card-shadow:      0 4px 32px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.06) inset;
+  --card-shadow-hover:0 8px 48px rgba(0,0,0,0.65);
+  --glass-bg:         rgba(255, 255, 255, 0.05);
+  --glass-border:     rgba(196, 119, 90, 0.28);
+  --gradient-brand:   linear-gradient(135deg, #D4856A 0%, #C4755A 60%, #B06048 100%);
+  --gradient-sage:    linear-gradient(135deg, #8ABE8A 0%, #72A472 100%);
+  --gradient-card:    linear-gradient(160deg, rgba(255,255,255,0.05) 0%, rgba(196,119,90,0.05) 100%);
+  --gradient-warm:    linear-gradient(135deg, #352820, #241A12);
 }
 
 /* ══════════════════════════════════════════════
@@ -162,13 +162,15 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 1rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, .serif {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Luckiest Guy', 'DM Sans', sans-serif;
+  letter-spacing: 0.04em;
 }
 
 /* Paper texture on light theme */
