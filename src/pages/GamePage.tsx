@@ -8,6 +8,7 @@ import { AICoachPanel } from '../components/AICoachPanel';
 import { DailyChallenge } from '../components/DailyChallenge';
 import { useGameStore } from '../store/gameStore';
 import { useAuth } from '../hooks/useAuth';
+import { useGuestStore } from '../store/guestStore';
 import { useSound } from '../hooks/useSound';
 import { supabase } from '../lib/supabaseClient';
 import type { Stats, GameHistoryEntry, Difficulty } from '../types';
@@ -65,6 +66,7 @@ export function GamePage() {
     initGame, elapsedMs, startTime, endTime,
   } = useGameStore();
   const { user, profile, refreshProfile } = useAuth();
+  const { isGuest, addCoins: addGuestCoins, addHistory: addGuestHistory, history: guestHistory } = useGuestStore();
   const { play } = useSound();
 
   const [stats, setStats] = useState<Stats | null>(null);
@@ -122,8 +124,22 @@ export function GamePage() {
   };
 
   const handleGameWin = async () => {
-    if (!user) return;
     const timeMs = endTime && startTime ? endTime - startTime : elapsedMs;
+
+    // Guest mode: save locally
+    if (!user && isGuest) {
+      const rawCoins = COIN_REWARDS[`WIN_${difficulty.toUpperCase()}` as keyof typeof COIN_REWARDS] as number | undefined;
+      const coinsEarned = Math.max(COIN_REWARDS.MIN_WIN, rawCoins ?? COIN_REWARDS.WIN_EASY);
+      addGuestCoins(coinsEarned);
+      addGuestHistory({ difficulty, result: 'win', time_ms: timeMs, played_at: new Date().toISOString() });
+      play('coin');
+      setCoinAnimation({ amount: coinsEarned, show: true });
+      setTimeout(() => setCoinAnimation(c => ({ ...c, show: false })), 2000);
+      toast.success(`🎉 Победа! +${coinsEarned} монет`, { duration: 3000 });
+      return;
+    }
+
+    if (!user) return;
 
     // Save daily challenge result before anything else (idempotent RPC)
     if (isDailyRef.current && dailyDateRef.current) {
@@ -332,7 +348,7 @@ export function GamePage() {
             <div className="lg:hidden space-y-4">
               <AICoachPanel />
               <Statistics stats={stats} loading={statsLoading} />
-              <History history={history} />
+              <History history={isGuest ? guestHistory : history} />
               <DailyChallenge userId={user?.id} onPlay={handleDailyPlay} />
             </div>
           </div>

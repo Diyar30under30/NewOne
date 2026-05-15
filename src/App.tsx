@@ -13,6 +13,7 @@ import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { useAuth } from './hooks/useAuth';
 import { useTheme } from './hooks/useTheme';
 import { useUIStore } from './store/uiStore';
+import { useGuestStore } from './store/guestStore';
 import { isSupabaseConfigured } from './lib/supabaseClient';
 import {
   Gamepad2, Users, ShoppingBag, Calendar, User, LogIn, Coins, Volume2, VolumeX
@@ -28,6 +29,7 @@ const queryClient = new QueryClient({
 function Header() {
   const { user, profile, loading } = useAuth();
   const { soundEnabled, toggleSound } = useUIStore();
+  const { isGuest, guestName, coins: guestCoins, clearGuest } = useGuestStore();
   const navigate = useNavigate();
 
   return (
@@ -63,10 +65,10 @@ function Header() {
 
       {/* Right */}
       <div className="flex items-center gap-2">
-        {profile && (
+        {(profile || isGuest) && (
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-sm font-semibold"
             style={{ background: 'rgba(196,119,90,0.1)', border: '1px solid rgba(196,119,90,0.2)', color: 'var(--accent)' }}>
-            🪙 <span>{profile.coins.toLocaleString()}</span>
+            🪙 <span>{(profile?.coins ?? guestCoins).toLocaleString()}</span>
           </div>
         )}
 
@@ -95,6 +97,21 @@ function Header() {
                 {profile?.username ?? 'Профиль'}
               </span>
               {profile?.is_pro && <span className="text-xs">⭐</span>}
+            </button>
+          ) : isGuest ? (
+            <button
+              onClick={() => { clearGuest(); navigate('/auth'); }}
+              className="flex items-center gap-2 pl-2 pr-3.5 py-1.5 rounded-2xl transition-all"
+              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}
+              title="Выйти из гостевого режима"
+            >
+              <div className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-bold shrink-0"
+                style={{ background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
+                👤
+              </div>
+              <span className="text-sm font-medium hidden sm:block max-w-[80px] truncate" style={{ color: 'var(--text-secondary)' }}>
+                {guestName || 'Гость'}
+              </span>
             </button>
           ) : (
             <button onClick={() => navigate('/auth')} className="btn-primary py-2 px-4 text-sm">

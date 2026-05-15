@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useGuestStore } from '../store/guestStore';
 import { isSupabaseConfigured } from '../lib/supabaseClient';
-import { Mail, Lock, User, Eye, EyeOff, Github, AlertTriangle } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, Github, AlertTriangle, UserCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { clsx } from 'clsx';
 
@@ -10,10 +11,13 @@ type Mode = 'signin' | 'signup' | 'forgot' | 'verify';
 
 export function AuthPage() {
   const { signIn, signUp, signInWithGoogle, signInWithGithub, resetPassword } = useAuth();
+  const { setGuest } = useGuestStore();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [mode, setMode] = useState<Mode>('signin');
+  const [guestName, setGuestName] = useState('');
+  const [showGuestInput, setShowGuestInput] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -267,6 +271,48 @@ export function AuthPage() {
                   <Github size={18} />
                   Войти через GitHub
                 </button>
+
+                {/* Guest mode */}
+                {!showGuestInput ? (
+                  <button
+                    onClick={() => setShowGuestInput(true)}
+                    className="w-full py-3 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200"
+                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}
+                  >
+                    <UserCircle size={18} />
+                    Играть как гость
+                  </button>
+                ) : (
+                  <div className="rounded-2xl p-4 space-y-3" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
+                    <p className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>
+                      Монеты и история сохраняются локально в браузере
+                    </p>
+                    <input
+                      className="input-field w-full"
+                      placeholder="Ваше имя (необязательно)"
+                      value={guestName}
+                      onChange={e => setGuestName(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          setGuest(guestName.trim() || 'Гость');
+                          navigate(from, { replace: true });
+                        }
+                      }}
+                      maxLength={20}
+                      autoFocus
+                    />
+                    <button
+                      onClick={() => {
+                        setGuest(guestName.trim() || 'Гость');
+                        toast.success(`Добро пожаловать, ${guestName.trim() || 'Гость'}!`);
+                        navigate(from, { replace: true });
+                      }}
+                      className="btn-sage w-full py-2.5"
+                    >
+                      Начать играть
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           )}
