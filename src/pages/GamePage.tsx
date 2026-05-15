@@ -78,6 +78,7 @@ export function GamePage() {
   const [coinAnimation, setCoinAnimation] = useState<{ amount: number; show: boolean }>({ amount: 0, show: false });
   const isDailyRef = React.useRef(false);
   const dailyDateRef = React.useRef<string | null>(null);
+  const winProcessedRef = React.useRef(false);
 
   useEffect(() => {
     initGame('medium');
@@ -92,6 +93,8 @@ export function GamePage() {
 
   useEffect(() => {
     if (status === 'won') {
+      if (winProcessedRef.current) return;
+      winProcessedRef.current = true;
       play('win');
       handleGameWin();
       launchConfetti();
@@ -99,6 +102,8 @@ export function GamePage() {
       play('explode');
       setGameEndAnimating(true);
       setTimeout(() => setGameEndAnimating(false), 600);
+    } else {
+      winProcessedRef.current = false; // reset for next game
     }
   }, [status]);
 

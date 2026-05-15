@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, NavLink, useNavigate, useLocation } from 
 import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GamePage } from './pages/GamePage';
+import BlitzAIPage from './pages/BlitzAIPage';
 import { AuthPage } from './pages/AuthPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { MultiplayerPage } from './pages/MultiplayerPage';
@@ -189,6 +190,7 @@ function AppContent() {
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/multiplayer" element={<MultiplayerPage />} />
+          <Route path="/multiplayer/blitz-ai" element={<BlitzAIPage />} />
           <Route path="/store" element={<StorePage />} />
           <Route path="/daily" element={<DailyPage />} />
         </Routes>
