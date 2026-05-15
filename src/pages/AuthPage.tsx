@@ -253,7 +253,20 @@ export function AuthPage() {
 
               <div className="space-y-3">
                 <button
-                  onClick={() => signInWithGoogle()}
+                  onClick={async () => {
+                    try {
+                      const { error } = await signInWithGoogle();
+                      if (error) {
+                        if (error.message?.includes('provider is not enabled') || error.message?.includes('Unsupported provider')) {
+                          toast.error('Google не настроен. Включите Google в Supabase → Authentication → Providers.', { duration: 6000 });
+                        } else {
+                          toast.error(error.message);
+                        }
+                      }
+                    } catch {
+                      toast.error('Не удалось подключиться к серверу.');
+                    }
+                  }}
                   className="btn-secondary w-full py-3 gap-3"
                 >
                   <svg viewBox="0 0 24 24" width="18" height="18">
@@ -265,7 +278,20 @@ export function AuthPage() {
                   Войти через Google
                 </button>
                 <button
-                  onClick={() => signInWithGithub()}
+                  onClick={async () => {
+                    try {
+                      const { error } = await signInWithGithub();
+                      if (error) {
+                        if (error.message?.includes('provider is not enabled') || error.message?.includes('Unsupported provider')) {
+                          toast.error('GitHub не настроен. Включите GitHub в Supabase → Authentication → Providers.', { duration: 6000 });
+                        } else {
+                          toast.error(error.message);
+                        }
+                      }
+                    } catch {
+                      toast.error('Не удалось подключиться к серверу.');
+                    }
+                  }}
                   className="btn-secondary w-full py-3 gap-3"
                 >
                   <Github size={18} />

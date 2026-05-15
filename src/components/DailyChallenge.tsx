@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Trophy, Clock, Star } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -26,6 +27,7 @@ function formatTime(ms: number): string {
 }
 
 export function DailyChallenge({ userId, onPlay }: DailyChallengeProps) {
+  const navigate = useNavigate();
   const [leaderboard, setLeaderboard] = useState<DailyEntry[]>([]);
   const [alreadyPlayed, setAlreadyPlayed] = useState(false);
   const [myResult, setMyResult] = useState<{ time_ms: number } | null>(null);
@@ -91,7 +93,7 @@ export function DailyChallenge({ userId, onPlay }: DailyChallengeProps) {
 
   const handlePlay = () => {
     if (!userId) {
-      toast.error('Войдите для участия в Daily Challenge');
+      navigate('/auth');
       return;
     }
     if (alreadyPlayed) {
@@ -145,12 +147,10 @@ export function DailyChallenge({ userId, onPlay }: DailyChallengeProps) {
       {/* Play button */}
       <button
         onClick={handlePlay}
-        disabled={alreadyPlayed || !userId}
+        disabled={alreadyPlayed}
         className={clsx(
           'w-full py-3 rounded-xl font-bold text-sm transition-all',
-          alreadyPlayed
-            ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-            : 'btn-primary'
+          alreadyPlayed ? 'bg-gray-700 text-gray-400 cursor-not-allowed' : 'btn-primary'
         )}
       >
         {alreadyPlayed ? '✅ Сыграно сегодня' : !userId ? '🔐 Войдите для участия' : '🎯 Играть!'}
