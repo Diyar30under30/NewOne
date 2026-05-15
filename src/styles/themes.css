@@ -1,0 +1,195 @@
+/* ══════════════════════════════════════════════
+   SOFT AESTHETIC — Light (default)
+   Palette: Cream · Terracotta · Sage Green
+══════════════════════════════════════════════ */
+:root,
+.theme-light {
+  /* Backgrounds */
+  --bg-primary:       #F5F0E8;
+  --bg-secondary:     #EDE6D8;
+  --bg-card:          #FFFFFF;
+  --bg-card-glass:    rgba(255, 255, 255, 0.97);
+  --bg-paper:         #E8E0D0;
+
+  /* Cells */
+  --bg-cell-closed:   #D8CCBC;
+  --bg-cell-open:     #F0EAE0;
+  --bg-cell-hover:    #C8BAAA;
+
+  /* Text */
+  --text-primary:     #1E1008;
+  --text-secondary:   #4A3020;
+  --text-muted:       #7A6050;
+  --text-faint:       #A89080;
+
+  /* Borders */
+  --border-color:     #C8B8A4;
+  --border-glow:      rgba(196, 119, 90, 0.45);
+  --shadow-color:     rgba(80, 50, 30, 0.12);
+
+  /* Accents — Terracotta */
+  --accent:           #C4775A;
+  --accent-dim:       rgba(196, 119, 90, 0.12);
+  --accent-hover:     #B06448;
+  --accent-glow:      rgba(196, 119, 90, 0.28);
+
+  /* Sage green secondary */
+  --sage:             #7A9E7A;
+  --sage-dim:         rgba(122, 158, 122, 0.14);
+  --sage-hover:       #688C68;
+
+  /* State colors */
+  --danger:           #C0503A;
+  --success:          #5D8A5D;
+  --warning:          #C07840;
+  --mine-bg:          rgba(192, 80, 58, 0.15);
+  --flag-color:       #C4775A;
+
+  /* Cell borders */
+  --cell-border-light: #F0E8DC;
+  --cell-border-dark:  #C8B8A8;
+
+  /* UI */
+  --header-bg:        rgba(245, 240, 232, 0.97);
+  --nav-bg:           rgba(255, 255, 255, 0.98);
+  --card-shadow:      0 2px 24px rgba(80, 50, 30, 0.12), 0 1px 0 rgba(255,255,255,1) inset;
+  --card-shadow-hover:0 8px 40px rgba(80, 50, 30, 0.18);
+  --glass-bg:         rgba(255, 255, 255, 0.85);
+  --glass-border:     rgba(200, 184, 164, 0.9);
+
+  /* Gradients */
+  --gradient-brand:   linear-gradient(135deg, #C4775A 0%, #B86B4E 60%, #A05A3E 100%);
+  --gradient-sage:    linear-gradient(135deg, #7A9E7A 0%, #668C66 100%);
+  --gradient-card:    linear-gradient(160deg, rgba(255,255,255,0.6) 0%, rgba(250,247,242,0.4) 100%);
+  --gradient-warm:    linear-gradient(135deg, #FAF7F2, #F0E8DC);
+}
+
+/* ══════════════════════════════════════════════
+   SOFT DARK — Warm mocha
+══════════════════════════════════════════════ */
+.dark,
+.theme-dark {
+  --bg-primary:       #18120E;
+  --bg-secondary:     #2C2118;
+  --bg-card:          #352820;
+  --bg-card-glass:    rgba(53, 40, 32, 0.97);
+  --bg-paper:         #241A12;
+  --bg-cell-closed:   #4A3828;
+  --bg-cell-open:     #241A12;
+  --bg-cell-hover:    #5A4838;
+  --text-primary:     #FFF5E8;
+  --text-secondary:   #DDB890;
+  --text-muted:       #AA8868;
+  --text-faint:       #7A5840;
+  --border-color:     rgba(196, 119, 90, 0.35);
+  --border-glow:      rgba(196, 119, 90, 0.55);
+  --shadow-color:     rgba(0, 0, 0, 0.6);
+  --accent:           #E0956E;
+  --accent-dim:       rgba(224, 149, 110, 0.2);
+  --accent-hover:     #C87850;
+  --accent-glow:      rgba(224, 149, 110, 0.4);
+  --sage:             #8ABE8A;
+  --sage-dim:         rgba(138, 190, 138, 0.18);
+  --sage-hover:       #78AA78;
+  --danger:           #E06858;
+  --success:          #72C272;
+  --warning:          #E0A050;
+  --mine-bg:          rgba(224, 104, 88, 0.25);
+  --flag-color:       #E0956E;
+  --cell-border-light: rgba(196, 119, 90, 0.3);
+  --cell-border-dark:  #0E0A06;
+  --header-bg:        rgba(24, 18, 14, 0.97);
+  --nav-bg:           rgba(24, 18, 14, 0.98);
+  --card-shadow:      0 4px 32px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.06) inset;
+  --card-shadow-hover:0 8px 48px rgba(0,0,0,0.65);
+  --glass-bg:         rgba(255, 255, 255, 0.05);
+  --glass-border:     rgba(196, 119, 90, 0.28);
+  --gradient-brand:   linear-gradient(135deg, #D4856A 0%, #C4755A 60%, #B06048 100%);
+  --gradient-sage:    linear-gradient(135deg, #8ABE8A 0%, #72A472 100%);
+  --gradient-card:    linear-gradient(160deg, rgba(255,255,255,0.05) 0%, rgba(196,119,90,0.05) 100%);
+  --gradient-warm:    linear-gradient(135deg, #352820, #241A12);
+}
+
+/* ══════════════════════════════════════════════
+   HIGH CONTRAST
+══════════════════════════════════════════════ */
+.theme-contrast {
+  --bg-primary:       #000000;
+  --bg-secondary:     #0A0A08;
+  --bg-card:          #100E0A;
+  --bg-card-glass:    rgba(16, 14, 10, 0.97);
+  --bg-paper:         #000000;
+  --bg-cell-closed:   #1A1208;
+  --bg-cell-open:     #000000;
+  --bg-cell-hover:    #2A2010;
+  --text-primary:     #FFFFFF;
+  --text-secondary:   #F0D0B0;
+  --text-muted:       #B09070;
+  --text-faint:       #705040;
+  --border-color:     rgba(196, 119, 90, 0.7);
+  --border-glow:      rgba(196, 119, 90, 0.6);
+  --shadow-color:     rgba(196, 119, 90, 0.2);
+  --accent:           #FF9966;
+  --accent-dim:       rgba(255, 153, 102, 0.12);
+  --accent-hover:     #FF8855;
+  --accent-glow:      rgba(255, 153, 102, 0.5);
+  --sage:             #88CC88;
+  --sage-dim:         rgba(136, 204, 136, 0.12);
+  --sage-hover:       #66BB66;
+  --danger:           #FF4422;
+  --success:          #44CC44;
+  --warning:          #FFAA22;
+  --mine-bg:          rgba(255, 68, 34, 0.2);
+  --flag-color:       #FF9966;
+  --cell-border-light: rgba(255, 153, 102, 0.5);
+  --cell-border-dark:  #000000;
+  --header-bg:        rgba(0, 0, 0, 0.98);
+  --nav-bg:           rgba(0, 0, 0, 0.98);
+  --card-shadow:      0 0 0 1px rgba(196,119,90,0.5);
+  --card-shadow-hover:0 0 20px rgba(196,119,90,0.4);
+  --glass-bg:         rgba(196, 119, 90, 0.04);
+  --glass-border:     rgba(196, 119, 90, 0.4);
+  --gradient-brand:   linear-gradient(135deg, #FF9966, #FF7744);
+  --gradient-sage:    linear-gradient(135deg, #88CC88, #55AA55);
+  --gradient-card:    linear-gradient(135deg, rgba(196,119,90,0.04), transparent);
+  --gradient-warm:    linear-gradient(135deg, #100E0A, #1A1208);
+}
+
+/* ══════════════════════════════════════════════
+   GLOBAL BASE
+══════════════════════════════════════════════ */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Luckiest Guy', system-ui, sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, .serif {
+  font-family: 'Luckiest Guy', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+/* Paper texture on light theme */
+.theme-light body,
+:root body {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeBlend in='SourceGraphic' mode='multiply'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Shake */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%, 45%, 75% { transform: translateX(-5px); }
+  30%, 60%, 90% { transform: translateX(5px); }
+}
+.animate-shake { animation: shake 0.5s ease-in-out; }

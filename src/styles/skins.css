@@ -1,0 +1,145 @@
+/* ══════════════════════════════════════════════
+   CLASSIC SKIN — Soft Aesthetic
+══════════════════════════════════════════════ */
+.skin-classic .cell-closed {
+  background: linear-gradient(145deg, #EDE4D6, #E0D3C0);
+  border: 1px solid #D4C8B4;
+  box-shadow:
+    0 2px 4px rgba(80, 50, 30, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset;
+  border-radius: 5px;
+  transition: background 0.1s ease, box-shadow 0.1s ease, transform 0.08s ease;
+}
+.skin-classic .cell-closed:hover {
+  background: linear-gradient(145deg, #E5D8C5, #D5C5AE);
+  box-shadow:
+    0 3px 8px rgba(80, 50, 30, 0.16),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+.skin-classic .cell-closed:active { transform: scale(0.94); }
+.skin-classic .cell-open {
+  background: #F5F0E8;
+  border: 1px solid #E2D8CC;
+  border-radius: 5px;
+}
+.skin-classic .cell-flag  { color: #C4775A; }
+.skin-classic .cell-mine  { color: #3D2C1E; }
+
+/* Dark variant */
+.theme-dark .skin-classic .cell-closed {
+  background: linear-gradient(145deg, #3A2E24, #2E2418);
+  border: 1px solid rgba(196, 119, 90, 0.22);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset;
+}
+.theme-dark .skin-classic .cell-closed:hover {
+  background: linear-gradient(145deg, #4A3C30, #3C3025);
+  border-color: rgba(196, 119, 90, 0.4);
+}
+.theme-dark .skin-classic .cell-open {
+  background: rgba(26, 18, 10, 0.8);
+  border: 1px solid rgba(80, 50, 30, 0.4);
+}
+
+
+
+/* ===== CYBERPUNK SKIN ===== */
+.skin-cyberpunk .cell-closed {
+  background: linear-gradient(145deg, #0a0a2e, #1a0a3e);
+  border: 1px solid #00ffff;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4), inset 0 0 4px rgba(0, 255, 255, 0.1);
+  position: relative;
+}
+.skin-cyberpunk .cell-closed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 40%, rgba(0, 255, 255, 0.05) 50%, transparent 60%);
+}
+.skin-cyberpunk .cell-open {
+  background: #050510;
+  border: 1px solid #003333;
+  box-shadow: inset 0 0 6px rgba(0, 255, 255, 0.1);
+}
+.skin-cyberpunk .cell-flag { color: #ff0080; filter: drop-shadow(0 0 4px #ff0080); }
+.skin-cyberpunk .cell-mine { color: #00ffff; filter: drop-shadow(0 0 6px #00ffff); }
+
+/* ===== SPACE SKIN ===== */
+.skin-space .cell-closed {
+  background: radial-gradient(ellipse at 30% 30%, #1a1a4e, #0a0a2e);
+  border: 1px solid #4444aa;
+  position: relative;
+  overflow: hidden;
+}
+.skin-space .cell-closed::before {
+  content: '✦';
+  position: absolute;
+  font-size: 6px;
+  color: rgba(255,255,255,0.3);
+  top: 2px;
+  right: 3px;
+}
+.skin-space .cell-open {
+  background: #030312;
+  border: 1px solid #1a1a3a;
+}
+.skin-space .cell-flag { color: #ff6b35; }
+.skin-space .cell-mine { color: #ff4444; filter: drop-shadow(0 0 8px #ff4444); }
+
+/* ===== PIXEL ART SKIN ===== */
+.skin-pixel .cell-closed {
+  background: #7bc67e;
+  border-top: 3px solid #9ed89f;
+  border-left: 3px solid #9ed89f;
+  border-bottom: 3px solid #5a9e5d;
+  border-right: 3px solid #5a9e5d;
+  image-rendering: pixelated;
+}
+.skin-pixel .cell-open {
+  background: #a8d5a2;
+  border: 2px solid #7bc67e;
+}
+.skin-pixel .cell-flag { color: #c0392b; }
+.skin-pixel .cell-mine { color: #2c3e50; }
+
+/* ===== CHRISTMAS SKIN ===== */
+.skin-xmas .cell-closed {
+  background: linear-gradient(145deg, #1a5c1a, #0d3d0d);
+  border: 1px solid #2d7a2d;
+  box-shadow: inset 0 0 4px rgba(255, 200, 0, 0.1);
+}
+.skin-xmas .cell-open {
+  background: linear-gradient(145deg, #8b1010, #5a0a0a);
+  border: 1px solid #aa1515;
+}
+.skin-xmas .cell-flag { color: #ffd700; filter: drop-shadow(0 0 3px gold); }
+.skin-xmas .cell-mine { color: #ffd700; }
+
+/* ===== CUTE SKIN ===== */
+.skin-cute .cell-closed {
+  background: linear-gradient(145deg, #ffb7d5, #ff8dc0);
+  border: 2px solid #ff69b4;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 6px rgba(255, 105, 180, 0.3);
+}
+.skin-cute .cell-open {
+  background: linear-gradient(145deg, #ffd4e8, #ffb7d5);
+  border: 2px solid #ff97ca;
+  border-radius: 6px !important;
+}
+.skin-cute .cell-flag { color: #ff0066; }
+.skin-cute .cell-mine { color: #990033; }
+
+/* Hint overlays */
+.cell-hint-safe {
+  background: rgba(34, 197, 94, 0.35) !important;
+  border-color: #22c55e !important;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important;
+}
+.cell-hint-danger {
+  background: rgba(239, 68, 68, 0.35) !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5) !important;
+}
+.cell-hint-medium {
+  background: rgba(245, 158, 11, 0.25) !important;
+}
