@@ -148,9 +148,11 @@ export function GamePage() {
     const trackableKey = ['easy', 'medium', 'hard', 'blitz'].includes(difficulty);
     const timeKey = `best_time_${difficulty}` as keyof Stats;
     const isRecord = trackableKey && (!stats?.[timeKey] || timeMs < (stats[timeKey] as number));
-    const coinsEarned = isRecord
-      ? COIN_REWARDS[`RECORD_${difficulty.toUpperCase()}` as keyof typeof COIN_REWARDS] ?? COIN_REWARDS.WIN_MEDIUM
-      : COIN_REWARDS[`WIN_${difficulty.toUpperCase()}` as keyof typeof COIN_REWARDS] ?? COIN_REWARDS.WIN_MEDIUM;
+    const rawCoins = isRecord
+      ? (COIN_REWARDS[`RECORD_${difficulty.toUpperCase()}` as keyof typeof COIN_REWARDS] as number | undefined)
+      : (COIN_REWARDS[`WIN_${difficulty.toUpperCase()}` as keyof typeof COIN_REWARDS] as number | undefined);
+    // Always give at least 5 coins per win
+    const coinsEarned = Math.max(COIN_REWARDS.MIN_WIN, rawCoins ?? COIN_REWARDS.WIN_EASY);
 
     // Save history
     await supabase.from('game_history').insert({
