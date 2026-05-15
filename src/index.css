@@ -9,7 +9,7 @@
   html { scroll-behavior: smooth; font-size: 16px; }
   body {
     margin: 0; min-height: 100vh; overflow-x: hidden;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Luckiest Guy', sans-serif;
     font-size: 1rem;
     line-height: 1.55;
   }
@@ -26,7 +26,7 @@
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-semibold text-white
            transition-all duration-200 active:scale-95 focus:outline-none relative overflow-hidden;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Luckiest Guy', sans-serif;
     font-size: 1rem;
     background: var(--gradient-brand);
     box-shadow: 0 4px 16px var(--accent-glow), 0 1px 0 rgba(255,255,255,0.15) inset;
@@ -51,7 +51,7 @@
   .btn-sage {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-semibold text-white
            transition-all duration-200 active:scale-95 focus:outline-none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Luckiest Guy', sans-serif;
     font-size: 1rem;
     background: var(--gradient-sage);
     box-shadow: 0 4px 16px rgba(122, 158, 122, 0.3);
@@ -62,7 +62,7 @@
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-semibold
            transition-all duration-200 active:scale-95 focus:outline-none border;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Luckiest Guy', sans-serif;
     font-size: 0.95rem;
     background: var(--bg-card);
     color: var(--text-secondary);
@@ -84,7 +84,7 @@
   /* ─── Game Card (paper card) ─── */
   .game-card {
     @apply rounded-3xl p-5 border relative;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Luckiest Guy', sans-serif;
     font-size: 0.95rem;
     background: var(--bg-card);
     border-color: var(--border-color);
@@ -103,7 +103,7 @@
   .input-field {
     @apply w-full px-4 py-3 rounded-2xl border outline-none transition-all duration-200;
     font-size: 1rem;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Luckiest Guy', sans-serif;
     background: var(--bg-secondary);
     color: var(--text-primary);
     border-color: var(--border-color);
@@ -118,7 +118,7 @@
   /* ─── Badge ─── */
   .badge {
     @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Luckiest Guy', sans-serif;
   }
 
   /* ─── Nav Link ─── */
@@ -136,13 +136,13 @@
 
 /* ─── Luckiest Guy headings ─── */
 .serif-heading {
-  font-family: 'Luckiest Guy', 'DM Sans', sans-serif;
+  font-family: 'Luckiest Guy', sans-serif;
   font-weight: 400;
   letter-spacing: 0.04em;
 }
 
 .lucky-heading {
-  font-family: 'Luckiest Guy', 'DM Sans', sans-serif;
+  font-family: 'Luckiest Guy', sans-serif;
   font-weight: 400;
   letter-spacing: 0.05em;
   line-height: 1.1;
@@ -250,8 +250,8 @@
 
 /* ─── Section title ─── */
 .section-title {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 600;
+  font-family: 'Luckiest Guy', sans-serif;
+  font-weight: 400;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }

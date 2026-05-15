@@ -58,7 +58,7 @@ function Header() {
             Minesweeper
           </span>
           <span className="ml-2 text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full"
-            style={{ background: 'var(--accent-dim)', color: 'var(--accent)', fontFamily: "'DM Sans', sans-serif" }}>
+            style={{ background: 'var(--accent-dim)', color: 'var(--accent)', fontFamily: "'Luckiest Guy', sans-serif" }}>
             Pro
           </span>
         </div>
@@ -166,7 +166,7 @@ function BottomNav() {
               {icon}
             </div>
             <span className="text-[11px] font-bold transition-colors tracking-wide"
-              style={{ color: isActive ? 'var(--accent)' : 'var(--text-faint)', fontFamily: "'DM Sans', sans-serif" }}>
+              style={{ color: isActive ? 'var(--accent)' : 'var(--text-faint)', fontFamily: "'Luckiest Guy', sans-serif" }}>
               {label}
             </span>
           </NavLink>
