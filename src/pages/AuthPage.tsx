@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Mail, Lock, User, Eye, EyeOff, Github } from 'lucide-react';
+import { isSupabaseConfigured } from '../lib/supabaseClient';
+import { Mail, Lock, User, Eye, EyeOff, Github, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { clsx } from 'clsx';
 
@@ -21,46 +22,48 @@ export function AuthPage() {
 
   const from = (location.state as { from?: string })?.from ?? '/';
 
+  const handleAuthError = (error: { message: string } | null) => {
+    if (!error) return;
+    const msg = error.message;
+    if (msg === 'Failed to fetch' || msg.includes('fetch')) {
+      toast.error('Не удалось подключиться к серверу. Проверьте интернет-соединение.', { duration: 5000 });
+    } else if (msg.includes('Email not confirmed')) {
+      toast.error('Подтвердите email перед входом — проверьте папку Спам.');
+    } else if (msg.includes('Invalid login credentials')) {
+      toast.error('Неверный email или пароль.');
+    } else if (msg.includes('User already registered')) {
+      toast.error('Этот email уже зарегистрирован. Войдите или сбросьте пароль.');
+    } else if (msg.includes('Password should be at least')) {
+      toast.error('Пароль должен быть не менее 6 символов.');
+    } else {
+      toast.error(msg);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isSupabaseConfigured) {
+      toast.error('Supabase не настроен. Добавьте VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY в переменные окружения Netlify.', { duration: 8000 });
+      return;
+    }
     setLoading(true);
-
     try {
       if (mode === 'signin') {
         const { error } = await signIn(email, password);
-        if (error) {
-          if (error.message.includes('Email not confirmed')) {
-            toast.error('Подтвердите email перед входом! Проверьте почту.');
-          } else if (error.message.includes('Invalid login credentials')) {
-            toast.error('Неверный email или пароль');
-          } else {
-            toast.error(error.message);
-          }
-        } else {
-          toast.success('Добро пожаловать!');
-          navigate(from, { replace: true });
-        }
+        if (error) { handleAuthError(error); }
+        else { toast.success('Добро пожаловать!'); navigate(from, { replace: true }); }
       } else if (mode === 'signup') {
-        if (username.length < 3) {
-          toast.error('Имя пользователя должно быть не менее 3 символов');
-          return;
-        }
-        const { data, error } = await signUp(email, password, username);
-        if (error) {
-          toast.error(error.message);
-        } else {
-          setMode('verify');
-          toast.success('Письмо отправлено! Проверьте почту.');
-        }
+        if (username.length < 3) { toast.error('Имя должно быть ≥ 3 символов'); return; }
+        const { error } = await signUp(email, password, username);
+        if (error) { handleAuthError(error); }
+        else { setMode('verify'); toast.success('Письмо отправлено! Проверьте почту.'); }
       } else if (mode === 'forgot') {
         const { error } = await resetPassword(email);
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success('Ссылка для сброса отправлена на почту!');
-          setMode('signin');
-        }
+        if (error) { handleAuthError(error); }
+        else { toast.success('Ссылка для сброса отправлена!'); setMode('signin'); }
       }
+    } catch {
+      toast.error('Не удалось подключиться к серверу. Проверьте интернет-соединение.');
     } finally {
       setLoading(false);
     }
@@ -95,38 +98,68 @@ export function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-primary)' }}>
-      <div className="max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
+      {/* Decorative background orbs */}
+      <div className="absolute top-1/4 left-1/4 w-80 h-80 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+
+      <div className="max-w-md w-full relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="text-5xl mb-3">💣</div>
-          <h1 className="text-2xl font-black gradient-text">Minesweeper Pro</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl text-4xl mb-4 mx-auto"
+            style={{ background: 'var(--gradient-brand)', boxShadow: '0 8px 32px var(--accent-glow)' }}>
+            💣
+          </div>
+          <h1 className="text-3xl font-black gradient-text mb-1">Minesweeper Pro</h1>
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
             {mode === 'signin' ? 'Рады снова видеть вас!' :
              mode === 'signup' ? 'Создайте аккаунт бесплатно' :
              'Восстановление пароля'}
           </p>
         </div>
 
-        <div className="game-card p-6">
+        {!isSupabaseConfigured && (
+          <div className="mb-4 p-4 rounded-2xl flex items-start gap-3 text-sm"
+            style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.35)' }}>
+            <AlertTriangle size={18} className="text-yellow-400 shrink-0 mt-0.5" />
+            <div style={{ color: 'var(--text-secondary)' }}>
+              <span className="font-bold text-yellow-400">Supabase не настроен.</span>{' '}
+              Добавьте <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'rgba(0,0,0,0.3)' }}>VITE_SUPABASE_URL</code> и{' '}
+              <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'rgba(0,0,0,0.3)' }}>VITE_SUPABASE_ANON_KEY</code> в{' '}
+              <span className="font-semibold">Site Settings → Environment Variables</span> на Netlify.
+            </div>
+          </div>
+        )}
+
+        <div className="game-card p-7">
           {/* Mode tabs */}
           {mode !== 'forgot' && (
-            <div className="flex gap-1 p-1 rounded-xl mb-6" style={{ background: 'var(--bg-secondary)' }}>
+            <div className="flex gap-1 p-1 rounded-xl mb-7" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
               <button
                 onClick={() => setMode('signin')}
                 className={clsx(
-                  'flex-1 py-2 rounded-lg text-sm font-semibold transition-all',
-                  mode === 'signin' ? 'bg-blue-500 text-white shadow-sm' : 'text-gray-400 hover:text-gray-200'
+                  'flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200',
+                  mode === 'signin'
+                    ? 'text-white shadow-lg'
+                    : 'hover:text-white/70'
                 )}
+                style={mode === 'signin'
+                  ? { background: 'var(--gradient-brand)', boxShadow: '0 4px 16px var(--accent-glow)', color: 'white' }
+                  : { color: 'var(--text-muted)' }}
               >
                 Войти
               </button>
               <button
                 onClick={() => setMode('signup')}
                 className={clsx(
-                  'flex-1 py-2 rounded-lg text-sm font-semibold transition-all',
-                  mode === 'signup' ? 'bg-blue-500 text-white shadow-sm' : 'text-gray-400 hover:text-gray-200'
+                  'flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200',
+                  mode === 'signup' ? 'text-white' : 'hover:text-white/70'
                 )}
+                style={mode === 'signup'
+                  ? { background: 'var(--gradient-brand)', boxShadow: '0 4px 16px var(--accent-glow)', color: 'white' }
+                  : { color: 'var(--text-muted)' }}
               >
                 Регистрация
               </button>

@@ -33,62 +33,69 @@ function Header() {
       className="sticky top-0 z-40 px-4 py-3 flex items-center justify-between"
       style={{
         background: 'var(--header-bg)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid var(--glass-border)',
+        boxShadow: '0 1px 40px rgba(0,0,0,0.3)',
       }}
     >
       {/* Logo */}
       <button
         onClick={() => navigate('/')}
-        className="flex items-center gap-2 font-black text-white hover:opacity-80 transition-opacity"
+        className="flex items-center gap-2.5 hover:opacity-90 transition-opacity group"
       >
-        <span className="text-2xl">💣</span>
-        <span className="hidden sm:block text-base tracking-tight">Minesweeper Pro</span>
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl"
+          style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.15)' }}>
+          💣
+        </div>
+        <div className="hidden sm:block">
+          <div className="text-sm font-black text-white tracking-tight leading-none">Minesweeper</div>
+          <div className="text-[10px] font-bold tracking-widest" style={{ color: 'var(--accent)' }}>PRO</div>
+        </div>
       </button>
 
       {/* Right side */}
-      <div className="flex items-center gap-2">
-        {/* Coin counter */}
+      <div className="flex items-center gap-1.5">
         {profile && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 text-white font-bold text-sm">
-            <span className="text-yellow-300">🪙</span>
-            <span>{profile.coins}</span>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-sm"
+            style={{ background: 'rgba(251,191,36,0.15)', border: '1px solid rgba(251,191,36,0.25)', color: '#fbbf24' }}>
+            <span>🪙</span>
+            <span>{profile.coins.toLocaleString()}</span>
           </div>
         )}
 
-        {/* Sound toggle */}
         <button
           onClick={toggleSound}
-          className="p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all"
+          className="p-2 rounded-xl transition-all text-white/60 hover:text-white"
+          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.08)' }}
           title={soundEnabled ? 'Выключить звук' : 'Включить звук'}
         >
-          {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+          {soundEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
         </button>
 
-        {/* Theme */}
         <ThemeSwitcher compact />
 
-        {/* Auth */}
         {!loading && (
           user ? (
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/15 text-white hover:bg-white/25 transition-all"
+              className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-xl transition-all"
+              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}
             >
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-xs font-bold shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center text-xs font-black text-white shrink-0">
                 {profile?.username?.[0]?.toUpperCase() ?? '?'}
               </div>
-              <span className="text-sm font-semibold hidden sm:block max-w-[80px] truncate">
+              <span className="text-sm font-semibold text-white hidden sm:block max-w-[72px] truncate">
                 {profile?.username ?? 'Профиль'}
               </span>
-              {profile?.is_pro && <span className="text-yellow-300 text-xs">⭐</span>}
+              {profile?.is_pro && <span className="text-xs">⭐</span>}
             </button>
           ) : (
             <button
               onClick={() => navigate('/auth')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/15 text-white text-sm font-semibold hover:bg-white/25 transition-all"
+              className="btn-primary py-1.5 px-4 text-sm"
             >
-              <LogIn size={16} />
+              <LogIn size={14} />
               <span className="hidden sm:inline">Войти</span>
             </button>
           )
@@ -102,20 +109,22 @@ function BottomNav() {
   const location = useLocation();
 
   const links = [
-    { to: '/', icon: <Gamepad2 size={20} />, label: 'Игра' },
-    { to: '/daily', icon: <Calendar size={20} />, label: 'Daily' },
-    { to: '/multiplayer', icon: <Users size={20} />, label: 'Онлайн' },
-    { to: '/store', icon: <ShoppingBag size={20} />, label: 'Магазин' },
-    { to: '/profile', icon: <User size={20} />, label: 'Профиль' },
+    { to: '/', icon: <Gamepad2 size={22} />, label: 'Игра' },
+    { to: '/daily', icon: <Calendar size={22} />, label: 'Daily' },
+    { to: '/multiplayer', icon: <Users size={22} />, label: 'Онлайн' },
+    { to: '/store', icon: <ShoppingBag size={22} />, label: 'Магазин' },
+    { to: '/profile', icon: <User size={22} />, label: 'Профиль' },
   ];
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around px-2 py-2"
+      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around px-2 pt-2 pb-3"
       style={{
-        background: 'var(--bg-card)',
-        borderTop: '1px solid var(--border-color)',
-        backdropFilter: 'blur(12px)',
+        background: 'var(--nav-bg)',
+        borderTop: '1px solid var(--glass-border)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        boxShadow: '0 -1px 40px rgba(0,0,0,0.2)',
       }}
     >
       {links.map(({ to, icon, label }) => {
@@ -124,18 +133,25 @@ function BottomNav() {
           <NavLink
             key={to}
             to={to}
-            className={clsx(
-              'flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-all duration-200',
-              isActive ? 'text-blue-400' : 'text-gray-500 hover:text-gray-300'
-            )}
+            className="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-all duration-200 relative"
           >
+            {isActive && (
+              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full"
+                style={{ background: 'var(--gradient-brand)' }} />
+            )}
             <div className={clsx(
-              'transition-all duration-200',
-              isActive ? 'scale-110' : ''
-            )}>
+              'transition-all duration-200 p-1.5 rounded-xl',
+              isActive
+                ? 'text-white scale-110'
+                : 'text-gray-500 hover:text-gray-300'
+            )}
+              style={isActive ? { background: 'var(--gradient-brand)', boxShadow: '0 4px 12px var(--accent-glow)' } : {}}
+            >
               {icon}
             </div>
-            <span className="text-[10px] font-semibold">{label}</span>
+            <span className={clsx('text-[10px] font-semibold transition-colors', isActive ? 'text-white' : 'text-gray-500')}>
+              {label}
+            </span>
           </NavLink>
         );
       })}
