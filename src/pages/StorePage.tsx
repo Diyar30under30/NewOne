@@ -65,20 +65,20 @@ export function StorePage() {
 
   const handlePurchase = async (skinId: string, price: number): Promise<boolean> => {
     if (!user || !profile) return false;
-    if (profile.coins < price) return false;
+    if (profile.coins < price) {
+      toast.error('Недостаточно монет');
+      return false;
+    }
 
-    const { error } = await supabase.from('user_skins').insert({
-      user_id: user.id,
-      skin_id: skinId,
-      equipped: false,
-      purchased_at: new Date().toISOString(),
+    const { data, error } = await supabase.rpc('purchase_skin', {
+      p_skin_id: skinId,
+      p_user_id: user.id,
     });
 
-    if (error) return false;
-
-    await supabase.from('profiles')
-      .update({ coins: profile.coins - price })
-      .eq('id', user.id);
+    if (error || !data?.success) {
+      toast.error(data?.error ?? 'Ошибка покупки');
+      return false;
+    }
 
     await refreshProfile();
     setOwnedSkins(prev => [...prev, skinId]);

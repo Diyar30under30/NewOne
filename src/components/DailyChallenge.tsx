@@ -17,7 +17,7 @@ interface DailyEntry {
 
 interface DailyChallengeProps {
   userId?: string;
-  onPlay: (seed: number) => void;
+  onPlay: (seed: number, date: string) => void;
 }
 
 function formatTime(ms: number): string {
@@ -98,7 +98,7 @@ export function DailyChallenge({ userId, onPlay }: DailyChallengeProps) {
       toast('Вы уже сыграли сегодня!', { icon: '📅' });
       return;
     }
-    onPlay(seed);
+    onPlay(seed, today);
   };
 
   return (

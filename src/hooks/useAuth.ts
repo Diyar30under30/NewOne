@@ -3,6 +3,14 @@ import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient';
 import type { Profile } from '../types';
 
+// Builds an absolute URL that works both locally and on GitHub Pages (/NewOne/ subpath)
+function siteUrl(path: string): string {
+  const base = import.meta.env.VITE_BASE_PATH ?? '/';
+  const origin = window.location.origin;
+  const basePath = base.endsWith('/') ? base : base + '/';
+  return `${origin}${basePath}${path.replace(/^\//, '')}`;
+}
+
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -44,7 +52,7 @@ export function useAuth() {
       password,
       options: {
         data: { username },
-        emailRedirectTo: `${window.location.origin}/auth/confirm`,
+        emailRedirectTo: siteUrl('auth/confirm'),
       },
     });
     return { data, error };
@@ -58,14 +66,14 @@ export function useAuth() {
   const signInWithGoogle = async () => {
     return supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: siteUrl('auth/callback') },
     });
   };
 
   const signInWithGithub = async () => {
     return supabase.auth.signInWithOAuth({
       provider: 'github',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: siteUrl('auth/callback') },
     });
   };
 
@@ -75,7 +83,7 @@ export function useAuth() {
 
   const resetPassword = async (email: string) => {
     return supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+      redirectTo: siteUrl('auth/callback'),
     });
   };
 

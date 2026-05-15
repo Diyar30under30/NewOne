@@ -154,6 +154,7 @@ function AppContent() {
           <Route path="/" element={<GamePage />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth/confirm" element={<EmailConfirmPage />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/multiplayer" element={<MultiplayerPage />} />
           <Route path="/store" element={<StorePage />} />
@@ -167,6 +168,15 @@ function AppContent() {
 
 function EmailConfirmPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    // If Supabase already auto-signed in via the confirm link, go to home
+    if (user) {
+      navigate('/', { replace: true });
+    }
+  }, [user]);
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-primary)' }}>
       <div className="max-w-md w-full game-card text-center p-8">
@@ -178,6 +188,28 @@ function EmailConfirmPage() {
         <button onClick={() => navigate('/auth')} className="btn-primary w-full">
           Войти
         </button>
+      </div>
+    </div>
+  );
+}
+
+function AuthCallbackPage() {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    // Supabase detects session from URL automatically (detectSessionInUrl: true).
+    // Wait for the auth state to settle then redirect.
+    if (!loading) {
+      navigate(user ? '/' : '/auth', { replace: true });
+    }
+  }, [user, loading]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
+      <div className="text-center">
+        <div className="text-4xl mb-4">⏳</div>
+        <p style={{ color: 'var(--text-secondary)' }}>Авторизация…</p>
       </div>
     </div>
   );

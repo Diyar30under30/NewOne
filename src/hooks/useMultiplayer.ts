@@ -55,7 +55,7 @@ export function useMultiplayer(userId: string | null) {
     return data;
   }, [userId]);
 
-  const joinRoom = useCallback(async (roomId: string, password?: string) => {
+  const joinRoom = useCallback(async (roomId: string, password?: string, playerInfo?: { username: string; avatar_url?: string }) => {
     if (!userId) return false;
     const { data: room } = await supabase
       .from('multiplayer_rooms')
@@ -68,12 +68,27 @@ export function useMultiplayer(userId: string | null) {
       setError('Неверный пароль');
       return false;
     }
-    if (room.players.length >= room.max_players) {
+    if ((room.players as unknown[]).length >= room.max_players) {
       setError('Комната заполнена');
       return false;
     }
 
-    setCurrentRoom(room);
+    // Add this player to the room's players JSONB array in DB
+    const newPlayer = {
+      id: userId,
+      username: playerInfo?.username ?? 'Игрок',
+      avatar_url: playerInfo?.avatar_url ?? null,
+      is_ready: false,
+      status: 'playing',
+      cells_opened: 0,
+    };
+    const updatedPlayers = [...(room.players as unknown[]), newPlayer];
+    await supabase
+      .from('multiplayer_rooms')
+      .update({ players: updatedPlayers })
+      .eq('id', roomId);
+
+    setCurrentRoom({ ...room, players: updatedPlayers });
     return true;
   }, [userId]);
 

@@ -51,8 +51,18 @@ export function ProfilePage() {
       toast.error('Файл слишком большой (макс. 2MB)');
       return;
     }
+    const allowedTypes: Record<string, string> = {
+      'image/jpeg': 'jpg',
+      'image/png': 'png',
+      'image/gif': 'gif',
+      'image/webp': 'webp',
+    };
+    const ext = allowedTypes[file.type];
+    if (!ext) {
+      toast.error('Допустимые форматы: JPG, PNG, GIF, WebP');
+      return;
+    }
     setAvatarUploading(true);
-    const ext = file.name.split('.').pop();
     const path = `avatars/${user.id}.${ext}`;
     const { error: uploadError } = await supabase.storage
       .from('avatars')

@@ -72,6 +72,8 @@ export function GamePage() {
   const [statsLoading, setStatsLoading] = useState(false);
   const [gameEndAnimating, setGameEndAnimating] = useState(false);
   const [coinAnimation, setCoinAnimation] = useState<{ amount: number; show: boolean }>({ amount: 0, show: false });
+  const isDailyRef = React.useRef(false);
+  const dailyDateRef = React.useRef<string | null>(null);
 
   useEffect(() => {
     initGame('medium');
@@ -122,9 +124,30 @@ export function GamePage() {
   const handleGameWin = async () => {
     if (!user) return;
     const timeMs = endTime && startTime ? endTime - startTime : elapsedMs;
-    const timeKey = `best_time_${difficulty}` as keyof Stats;
 
-    const isRecord = !stats?.[timeKey] || timeMs < (stats[timeKey] as number);
+    // Save daily challenge result before anything else (idempotent RPC)
+    if (isDailyRef.current && dailyDateRef.current) {
+      await supabase.rpc('save_daily_result', {
+        p_user_id: user.id,
+        p_date: dailyDateRef.current,
+        p_time_ms: timeMs,
+      });
+      const coinsDaily = COIN_REWARDS.DAILY_CHALLENGE;
+      await supabase.from('profiles')
+        .update({ coins: (profile?.coins ?? 0) + coinsDaily })
+        .eq('id', user.id);
+      play('coin');
+      setCoinAnimation({ amount: coinsDaily, show: true });
+      setTimeout(() => setCoinAnimation(c => ({ ...c, show: false })), 2000);
+      toast.success(`📅 Daily Challenge пройден! +${coinsDaily} монет`, { duration: 4000 });
+      await Promise.all([loadStats(), loadHistory(), refreshProfile()]);
+      return;
+    }
+
+    // Standard game win
+    const trackableKey = ['easy', 'medium', 'hard', 'blitz'].includes(difficulty);
+    const timeKey = `best_time_${difficulty}` as keyof Stats;
+    const isRecord = trackableKey && (!stats?.[timeKey] || timeMs < (stats[timeKey] as number));
     const coinsEarned = isRecord
       ? COIN_REWARDS[`RECORD_${difficulty.toUpperCase()}` as keyof typeof COIN_REWARDS] ?? COIN_REWARDS.WIN_MEDIUM
       : COIN_REWARDS[`WIN_${difficulty.toUpperCase()}` as keyof typeof COIN_REWARDS] ?? COIN_REWARDS.WIN_MEDIUM;
@@ -152,10 +175,10 @@ export function GamePage() {
       user_id: user.id,
       total_games: currentStats.total_games + 1,
       wins: currentStats.wins + 1,
-      losses: currentStats.losses,
+      losses: currentStats.losses ?? 0,
       current_win_streak: newStreak,
       longest_win_streak: newLongest,
-      ...(isRecord ? { [timeKey]: timeMs } : {}),
+      ...(isRecord && trackableKey ? { [timeKey]: timeMs } : {}),
     });
 
     // Add coins
@@ -204,10 +227,14 @@ export function GamePage() {
   }, [play, user, difficulty, startTime, stats]);
 
   const handleDifficultyChange = (diff: Difficulty) => {
+    isDailyRef.current = false;
+    dailyDateRef.current = null;
     initGame(diff);
   };
 
-  const handleDailyPlay = (seed: number) => {
+  const handleDailyPlay = (seed: number, date: string) => {
+    isDailyRef.current = true;
+    dailyDateRef.current = date;
     initGame('custom', seed);
     toast('🎯 Daily Challenge начат!');
   };
@@ -236,7 +263,7 @@ export function GamePage() {
 
                 {/* Status / Restart */}
                 <button
-                  onClick={() => initGame(difficulty)}
+                  onClick={() => { isDailyRef.current = false; dailyDateRef.current = null; initGame(difficulty); }}
                   className={clsx(
                     'w-12 h-12 rounded-2xl text-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-lg',
                     status === 'won' ? 'bg-green-500' :
@@ -285,7 +312,7 @@ export function GamePage() {
                   </div>
                 )}
                 <button
-                  onClick={() => initGame(difficulty)}
+                  onClick={() => { isDailyRef.current = false; dailyDateRef.current = null; initGame(difficulty); }}
                   className="btn-primary"
                 >
                   <RotateCcw size={16} />
