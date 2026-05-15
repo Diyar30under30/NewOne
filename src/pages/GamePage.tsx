@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Board } from '../components/Board';
 import { Timer } from '../components/Timer';
 import { DifficultySelector } from '../components/DifficultySelector';
@@ -66,7 +67,8 @@ export function GamePage() {
     initGame, elapsedMs, startTime, endTime,
   } = useGameStore();
   const { user, profile, refreshProfile } = useAuth();
-  const { isGuest, addCoins: addGuestCoins, addHistory: addGuestHistory, history: guestHistory } = useGuestStore();
+  const { isGuest, guestName, addCoins: addGuestCoins, addHistory: addGuestHistory, history: guestHistory } = useGuestStore();
+  const navigate = useNavigate();
   const { play } = useSound();
 
   const [stats, setStats] = useState<Stats | null>(null);
@@ -316,12 +318,17 @@ export function GamePage() {
                 <div className="text-5xl mb-2">
                   {status === 'won' ? '🏆' : '💥'}
                 </div>
+                {status === 'won' && (profile?.username || guestName) && (
+                  <p className="text-xs font-semibold mb-1 tracking-wide uppercase" style={{ color: 'var(--accent)' }}>
+                    {profile?.username || guestName}
+                  </p>
+                )}
                 <h2 className="text-xl font-black mb-1" style={{ color: 'var(--text-primary)' }}>
                   {status === 'won' ? 'Победа!' : 'Мина!'}
                 </h2>
                 <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
                   {status === 'won'
-                    ? `Время: ${Math.floor(elapsedMs / 1000)}с`
+                    ? `Время: ${Math.floor(elapsedMs / 1000)}с · ${difficulty}`
                     : 'Не повезло. Попробуйте ещё раз!'}
                 </p>
                 {coinAnimation.show && (
@@ -329,13 +336,24 @@ export function GamePage() {
                     +{coinAnimation.amount} 🪙
                   </div>
                 )}
-                <button
-                  onClick={() => { isDailyRef.current = false; dailyDateRef.current = null; initGame(difficulty); }}
-                  className="btn-primary"
-                >
-                  <RotateCcw size={16} />
-                  Играть снова
-                </button>
+                <div className="flex gap-2 justify-center flex-wrap">
+                  <button
+                    onClick={() => { isDailyRef.current = false; dailyDateRef.current = null; initGame(difficulty); }}
+                    className="btn-primary"
+                  >
+                    <RotateCcw size={16} />
+                    Играть снова
+                  </button>
+                  {status === 'won' && user && (
+                    <button
+                      onClick={() => navigate('/profile')}
+                      className="btn-sage"
+                    >
+                      <Trophy size={16} />
+                      Рейтинг
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
