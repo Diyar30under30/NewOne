@@ -4,12 +4,9 @@ import {
   createEmptyBoard, placeMines, openCell, checkWin,
   revealAllMines, forEachNeighbor, generateSeed,
 } from '../lib/utils/gameEngine';
-import { GAME_CONFIGS } from '../lib/utils/constants';
-import type { CellData } from '../types';
+import { GAME_CONFIGS, COIN_REWARDS } from '../lib/utils/constants';
+import type { CellData, Difficulty } from '../types';
 import { RotateCcw, Bot, User } from 'lucide-react';
-
-// ── Difficulty config for blitz ──────────────────────────────────────────────
-const CONFIG = GAME_CONFIGS.blitz; // 8×8, 8 mines
 
 // ── Number colors ────────────────────────────────────────────────────────────
 const NUM_COLORS: Record<number, string> = {
@@ -154,9 +151,9 @@ interface BoardState {
   cellsOpened: number;
 }
 
-function makeInitialState(): BoardState {
+function makeInitialState(rows: number, cols: number): BoardState {
   return {
-    board: createEmptyBoard(CONFIG.rows, CONFIG.cols),
+    board: createEmptyBoard(rows, cols),
     status: 'idle',
     firstClick: true,
     flagsPlaced: 0,
@@ -164,17 +161,31 @@ function makeInitialState(): BoardState {
   };
 }
 
+// ── Difficulty picker UI ─────────────────────────────────────────────────────
+const BLITZ_DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard', 'blitz'];
+const DIFF_COLORS: Record<string, string> = {
+  easy: '#22c55e', medium: '#eab308', hard: '#ef4444', blitz: '#a855f7',
+};
+const DIFF_COINS: Partial<Record<Difficulty, number>> = {
+  easy: COIN_REWARDS.WIN_EASY,
+  medium: COIN_REWARDS.WIN_MEDIUM,
+  hard: COIN_REWARDS.WIN_HARD,
+  blitz: COIN_REWARDS.WIN_BLITZ,
+};
+
 // ── Main component ───────────────────────────────────────────────────────────
 export default function BlitzAIPage() {
-  const [seed] = useState(generateSeed);
-  const [player, setPlayer] = useState<BoardState>(makeInitialState);
-  const [ai, setAI] = useState<BoardState>(makeInitialState);
+  const [difficulty, setDifficulty] = useState<Difficulty>('blitz');
+  const config = GAME_CONFIGS[difficulty];
+  const [seed, setSeed] = useState(generateSeed);
+  const [player, setPlayer] = useState<BoardState>(() => makeInitialState(config.rows, config.cols));
+  const [ai, setAI] = useState<BoardState>(() => makeInitialState(config.rows, config.cols));
   const [elapsed, setElapsed] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState<'player' | 'ai' | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const aiTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const aiStateRef = useRef<BoardState>(makeInitialState());
+  const aiStateRef = useRef<BoardState>(makeInitialState(config.rows, config.cols));
   const startRef = useRef<number | null>(null);
   const gameOverRef = useRef(false);
 
@@ -272,7 +283,7 @@ export default function BlitzAIPage() {
       let firstClick = prev.firstClick;
 
       if (firstClick) {
-        board = placeMines(board, CONFIG.mines, row, col, seed);
+        board = placeMines(board, config.mines, row, col, seed);
         firstClick = false;
         // Also start timers + AI on first click
       }
@@ -299,8 +310,10 @@ export default function BlitzAIPage() {
       prevFirstClick.current = false;
       // Start AI board
       setAI(prev => {
-        const board = placeMines(prev.board, CONFIG.mines, 3, 3, seed + 1);
-        const opened = openCell(board, 3, 3);
+        const midR = Math.floor(config.rows / 2);
+        const midC = Math.floor(config.cols / 2);
+        const board = placeMines(prev.board, config.mines, midR, midC, seed + 1);
+        const opened = openCell(board, midR, midC);
         return { ...prev, board: opened, status: 'playing', firstClick: false, cellsOpened: opened.flat().filter(c => c.isOpen && !c.isMine).length };
       });
       startTimers();
@@ -320,16 +333,18 @@ export default function BlitzAIPage() {
     });
   }, []);
 
-  const resetGame = useCallback(() => {
+  const resetGame = useCallback((diff?: Difficulty) => {
     stopTimers();
     gameOverRef.current = false;
     prevFirstClick.current = true;
-    setPlayer(makeInitialState());
-    setAI(makeInitialState());
+    const cfg = GAME_CONFIGS[diff ?? difficulty];
+    setSeed(generateSeed());
+    setPlayer(makeInitialState(cfg.rows, cfg.cols));
+    setAI(makeInitialState(cfg.rows, cfg.cols));
     setElapsed(0);
     setGameOver(false);
     setWinner(null);
-  }, [stopTimers]);
+  }, [stopTimers, difficulty]);
 
   useEffect(() => () => stopTimers(), [stopTimers]);
 
@@ -339,13 +354,13 @@ export default function BlitzAIPage() {
     return `${m}:${String(s % 60).padStart(2, '0')}`;
   };
 
-  const totalSafe = CONFIG.rows * CONFIG.cols - CONFIG.mines;
+  const totalSafe = config.rows * config.cols - config.mines;
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
               style={{ background: 'var(--gradient-brand)' }}>
@@ -354,7 +369,7 @@ export default function BlitzAIPage() {
             <div>
               <h1 className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>Блиц против ИИ</h1>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                8×8 · 8 мин · Кто быстрее расчистит поле?
+                {config.rows}×{config.cols} · {config.mines} мин · Кто быстрее?
               </p>
             </div>
           </div>
@@ -362,11 +377,41 @@ export default function BlitzAIPage() {
             <div className="text-2xl font-black font-mono" style={{ color: 'var(--accent)' }}>
               {formatTime(elapsed)}
             </div>
-            <button onClick={resetGame} className="btn-secondary py-2 px-3 gap-2">
+            <button onClick={() => resetGame()} className="btn-secondary py-2 px-3 gap-2">
               <RotateCcw size={16} /> Новая игра
             </button>
           </div>
         </div>
+
+        {/* Difficulty picker — only show when not playing */}
+        {player.status === 'idle' && !gameOver && (
+          <div className="game-card mb-4 p-4">
+            <p className="text-xs font-bold mb-3" style={{ color: 'var(--text-muted)' }}>ВЫБЕРИТЕ СЛОЖНОСТЬ</p>
+            <div className="flex flex-wrap gap-2">
+              {BLITZ_DIFFICULTIES.map(diff => {
+                const cfg = GAME_CONFIGS[diff];
+                const isActive = diff === difficulty;
+                const coins = DIFF_COINS[diff] ?? 5;
+                return (
+                  <button
+                    key={diff}
+                    onClick={() => { setDifficulty(diff); resetGame(diff); }}
+                    className="flex flex-col items-center px-4 py-2 rounded-xl border transition-all text-xs font-bold"
+                    style={{
+                      background: isActive ? DIFF_COLORS[diff] : 'var(--bg-secondary)',
+                      borderColor: isActive ? DIFF_COLORS[diff] : 'var(--border-color)',
+                      color: isActive ? '#fff' : 'var(--text-secondary)',
+                      boxShadow: isActive ? `0 4px 16px ${DIFF_COLORS[diff]}55` : 'none',
+                    }}
+                  >
+                    <span>{cfg.label}</span>
+                    <span style={{ opacity: 0.85 }}>{cfg.rows}×{cfg.cols} · 🪙{coins}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Game over overlay */}
         {gameOver && (
@@ -383,7 +428,7 @@ export default function BlitzAIPage() {
                 ? `Время: ${formatTime(elapsed)} · Отличная игра!`
                 : `Время: ${formatTime(elapsed)} · Попробуйте ещё раз!`}
             </p>
-            <button onClick={resetGame} className="btn-primary mx-auto">
+            <button onClick={() => resetGame()} className="btn-primary mx-auto">
               <RotateCcw size={16} /> Играть снова
             </button>
           </div>
@@ -401,7 +446,7 @@ export default function BlitzAIPage() {
                 {player.status === 'lost' && <span className="text-xs text-red-500 font-bold">ПРОИГРЫШ</span>}
               </div>
               <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-                <span>🚩 {player.flagsPlaced}/{CONFIG.mines}</span>
+                <span>🚩 {player.flagsPlaced}/{config.mines}</span>
                 <span>✅ {player.cellsOpened}/{totalSafe}</span>
               </div>
             </div>
@@ -437,7 +482,7 @@ export default function BlitzAIPage() {
                 {ai.status === 'lost' && <span className="text-xs text-red-500 font-bold">ОШИБКА</span>}
               </div>
               <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-                <span>🚩 {ai.flagsPlaced}/{CONFIG.mines}</span>
+                <span>🚩 {ai.flagsPlaced}/{config.mines}</span>
                 <span>✅ {ai.cellsOpened}/{totalSafe}</span>
               </div>
             </div>
