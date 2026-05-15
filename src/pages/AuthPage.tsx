@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { isSupabaseConfigured } from '../lib/supabaseClient';
-import { Mail, Lock, User, Eye, EyeOff, Github, AlertTriangle } from 'lucide-react';
+import { useGuestStore } from '../store/guestStore';
+import { Mail, Lock, User, Eye, EyeOff, UserCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { clsx } from 'clsx';
 
 type Mode = 'signin' | 'signup' | 'forgot' | 'verify';
 
 export function AuthPage() {
-  const { signIn, signUp, signInWithGoogle, signInWithGithub, resetPassword } = useAuth();
+  const { signIn, signUp, resetPassword } = useAuth();
+  const { setGuest } = useGuestStore();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [mode, setMode] = useState<Mode>('signin');
+  const [guestName, setGuestName] = useState('');
+  const [showGuestInput, setShowGuestInput] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -42,10 +45,6 @@ export function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isSupabaseConfigured) {
-      toast.error('Supabase не настроен. Добавьте VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY в переменные окружения Netlify.', { duration: 8000 });
-      return;
-    }
     setLoading(true);
     try {
       if (mode === 'signin') {
@@ -119,19 +118,6 @@ export function AuthPage() {
              'Восстановление пароля'}
           </p>
         </div>
-
-        {!isSupabaseConfigured && (
-          <div className="mb-4 p-4 rounded-2xl flex items-start gap-3 text-sm"
-            style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.35)' }}>
-            <AlertTriangle size={18} className="text-yellow-400 shrink-0 mt-0.5" />
-            <div style={{ color: 'var(--text-secondary)' }}>
-              <span className="font-bold text-yellow-400">Supabase не настроен.</span>{' '}
-              Добавьте <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'rgba(0,0,0,0.3)' }}>VITE_SUPABASE_URL</code> и{' '}
-              <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'rgba(0,0,0,0.3)' }}>VITE_SUPABASE_ANON_KEY</code> в{' '}
-              <span className="font-semibold">Site Settings → Environment Variables</span> на Netlify.
-            </div>
-          </div>
-        )}
 
         <div className="game-card p-7">
           {/* Mode tabs */}
@@ -248,25 +234,47 @@ export function AuthPage() {
               </div>
 
               <div className="space-y-3">
-                <button
-                  onClick={() => signInWithGoogle()}
-                  className="btn-secondary w-full py-3 gap-3"
-                >
-                  <svg viewBox="0 0 24 24" width="18" height="18">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                  </svg>
-                  Войти через Google
-                </button>
-                <button
-                  onClick={() => signInWithGithub()}
-                  className="btn-secondary w-full py-3 gap-3"
-                >
-                  <Github size={18} />
-                  Войти через GitHub
-                </button>
+                {/* Guest mode */}
+                {!showGuestInput ? (
+                  <button
+                    onClick={() => setShowGuestInput(true)}
+                    className="w-full py-3 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200"
+                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}
+                  >
+                    <UserCircle size={18} />
+                    Играть как гость
+                  </button>
+                ) : (
+                  <div className="rounded-2xl p-4 space-y-3" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
+                    <p className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>
+                      Монеты и история сохраняются локально в браузере
+                    </p>
+                    <input
+                      className="input-field w-full"
+                      placeholder="Ваше имя (необязательно)"
+                      value={guestName}
+                      onChange={e => setGuestName(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          setGuest(guestName.trim() || 'Гость');
+                          navigate(from, { replace: true });
+                        }
+                      }}
+                      maxLength={20}
+                      autoFocus
+                    />
+                    <button
+                      onClick={() => {
+                        setGuest(guestName.trim() || 'Гость');
+                        toast.success(`Добро пожаловать, ${guestName.trim() || 'Гость'}!`);
+                        navigate(from, { replace: true });
+                      }}
+                      className="btn-sage w-full py-2.5"
+                    >
+                      Начать играть
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           )}

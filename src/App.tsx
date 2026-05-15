@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, NavLink, useNavigate, useLocation } from 
 import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GamePage } from './pages/GamePage';
+import BlitzAIPage from './pages/BlitzAIPage';
 import { AuthPage } from './pages/AuthPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { MultiplayerPage } from './pages/MultiplayerPage';
@@ -12,6 +13,7 @@ import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { useAuth } from './hooks/useAuth';
 import { useTheme } from './hooks/useTheme';
 import { useUIStore } from './store/uiStore';
+import { useGuestStore } from './store/guestStore';
 import {
   Gamepad2, Users, ShoppingBag, Calendar, User, LogIn, Coins, Volume2, VolumeX
 } from 'lucide-react';
@@ -26,6 +28,7 @@ const queryClient = new QueryClient({
 function Header() {
   const { user, profile, loading } = useAuth();
   const { soundEnabled, toggleSound } = useUIStore();
+  const { isGuest, guestName, coins: guestCoins, clearGuest } = useGuestStore();
   const navigate = useNavigate();
 
   return (
@@ -49,11 +52,11 @@ function Header() {
           💣
         </div>
         <div className="hidden sm:block">
-          <span className="serif-heading text-base leading-none" style={{ color: 'var(--text-primary)' }}>
+          <span className="lucky-heading text-xl leading-none" style={{ color: 'var(--text-primary)' }}>
             Minesweeper
           </span>
-          <span className="ml-1.5 text-xs font-bold tracking-widest uppercase px-1.5 py-0.5 rounded-full"
-            style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}>
+          <span className="ml-2 text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full"
+            style={{ background: 'var(--accent-dim)', color: 'var(--accent)', fontFamily: "'Luckiest Guy', sans-serif" }}>
             Pro
           </span>
         </div>
@@ -61,10 +64,10 @@ function Header() {
 
       {/* Right */}
       <div className="flex items-center gap-2">
-        {profile && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-sm font-semibold"
+        {(profile || isGuest) && (
+          <div className="flex items-center gap-1.5 px-3 py-2 rounded-2xl font-bold text-base"
             style={{ background: 'rgba(196,119,90,0.1)', border: '1px solid rgba(196,119,90,0.2)', color: 'var(--accent)' }}>
-            🪙 <span>{profile.coins.toLocaleString()}</span>
+            🪙 <span>{(profile?.coins ?? guestCoins).toLocaleString()}</span>
           </div>
         )}
 
@@ -93,6 +96,21 @@ function Header() {
                 {profile?.username ?? 'Профиль'}
               </span>
               {profile?.is_pro && <span className="text-xs">⭐</span>}
+            </button>
+          ) : isGuest ? (
+            <button
+              onClick={() => { clearGuest(); navigate('/auth'); }}
+              className="flex items-center gap-2 pl-2 pr-3.5 py-1.5 rounded-2xl transition-all"
+              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}
+              title="Выйти из гостевого режима"
+            >
+              <div className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-bold shrink-0"
+                style={{ background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
+                👤
+              </div>
+              <span className="text-sm font-medium hidden sm:block max-w-[80px] truncate" style={{ color: 'var(--text-secondary)' }}>
+                {guestName || 'Гость'}
+              </span>
             </button>
           ) : (
             <button onClick={() => navigate('/auth')} className="btn-primary py-2 px-4 text-sm">
@@ -145,8 +163,8 @@ function BottomNav() {
             >
               {icon}
             </div>
-            <span className="text-[10px] font-semibold transition-colors"
-              style={{ color: isActive ? 'var(--accent)' : 'var(--text-faint)' }}>
+            <span className="text-[11px] font-bold transition-colors tracking-wide"
+              style={{ color: isActive ? 'var(--accent)' : 'var(--text-faint)', fontFamily: "'Luckiest Guy', sans-serif" }}>
               {label}
             </span>
           </NavLink>
@@ -170,6 +188,7 @@ function AppContent() {
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/multiplayer" element={<MultiplayerPage />} />
+          <Route path="/multiplayer/blitz-ai" element={<BlitzAIPage />} />
           <Route path="/store" element={<StorePage />} />
           <Route path="/daily" element={<DailyPage />} />
         </Routes>

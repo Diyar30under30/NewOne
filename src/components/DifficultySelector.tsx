@@ -1,7 +1,7 @@
 import React from 'react';
 import { clsx } from 'clsx';
 import type { Difficulty } from '../types';
-import { GAME_CONFIGS } from '../lib/utils/constants';
+import { GAME_CONFIGS, COIN_REWARDS } from '../lib/utils/constants';
 import { Zap, Grid, Layers, Crosshair, Timer } from 'lucide-react';
 
 interface DifficultySelectorProps {
@@ -33,6 +33,13 @@ const ACTIVE_COLORS: Record<Difficulty, string> = {
   custom: 'bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/30',
 };
 
+const WIN_COINS: Partial<Record<Difficulty, number>> = {
+  easy: COIN_REWARDS.WIN_EASY,
+  medium: COIN_REWARDS.WIN_MEDIUM,
+  hard: COIN_REWARDS.WIN_HARD,
+  blitz: COIN_REWARDS.WIN_BLITZ,
+};
+
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard', 'blitz'];
 
 export function DifficultySelector({ current, onChange }: DifficultySelectorProps) {
@@ -41,20 +48,26 @@ export function DifficultySelector({ current, onChange }: DifficultySelectorProp
       {DIFFICULTIES.map(diff => {
         const config = GAME_CONFIGS[diff];
         const isActive = diff === current;
+        const coins = WIN_COINS[diff];
         return (
           <button
             key={diff}
             onClick={() => onChange(diff)}
             className={clsx(
-              'flex items-center gap-1.5 px-3 py-2 rounded-xl border font-semibold text-xs transition-all duration-200 active:scale-95',
+              'flex flex-col items-center px-3 py-2 rounded-xl border font-semibold text-xs transition-all duration-200 active:scale-95 gap-0.5',
               isActive ? ACTIVE_COLORS[diff] : COLORS[diff]
             )}
           >
-            {ICONS[diff]}
-            <span>{config.label}</span>
-            <span className="opacity-70 hidden sm:inline">
-              ({config.rows}×{config.cols}, {config.mines}💣)
-            </span>
+            <div className="flex items-center gap-1.5">
+              {ICONS[diff]}
+              <span>{config.label}</span>
+            </div>
+            <div className="flex items-center gap-1 opacity-80">
+              <span className="hidden sm:inline">
+                {config.rows}×{config.cols}, {config.mines}💣 ·
+              </span>
+              <span>🪙 {coins}</span>
+            </div>
           </button>
         );
       })}

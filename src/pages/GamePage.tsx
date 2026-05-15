@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Board } from '../components/Board';
 import { Timer } from '../components/Timer';
 import { DifficultySelector } from '../components/DifficultySelector';
@@ -8,6 +9,7 @@ import { AICoachPanel } from '../components/AICoachPanel';
 import { DailyChallenge } from '../components/DailyChallenge';
 import { useGameStore } from '../store/gameStore';
 import { useAuth } from '../hooks/useAuth';
+import { useGuestStore } from '../store/guestStore';
 import { useSound } from '../hooks/useSound';
 import { supabase } from '../lib/supabaseClient';
 import type { Stats, GameHistoryEntry, Difficulty } from '../types';
@@ -65,6 +67,8 @@ export function GamePage() {
     initGame, elapsedMs, startTime, endTime,
   } = useGameStore();
   const { user, profile, refreshProfile } = useAuth();
+  const { isGuest, guestName, addCoins: addGuestCoins, addHistory: addGuestHistory, history: guestHistory } = useGuestStore();
+  const navigate = useNavigate();
   const { play } = useSound();
 
   const [stats, setStats] = useState<Stats | null>(null);
@@ -74,6 +78,7 @@ export function GamePage() {
   const [coinAnimation, setCoinAnimation] = useState<{ amount: number; show: boolean }>({ amount: 0, show: false });
   const isDailyRef = React.useRef(false);
   const dailyDateRef = React.useRef<string | null>(null);
+  const winProcessedRef = React.useRef(false);
 
   useEffect(() => {
     initGame('medium');
@@ -88,6 +93,8 @@ export function GamePage() {
 
   useEffect(() => {
     if (status === 'won') {
+      if (winProcessedRef.current) return;
+      winProcessedRef.current = true;
       play('win');
       handleGameWin();
       launchConfetti();
@@ -95,6 +102,8 @@ export function GamePage() {
       play('explode');
       setGameEndAnimating(true);
       setTimeout(() => setGameEndAnimating(false), 600);
+    } else {
+      winProcessedRef.current = false; // reset for next game
     }
   }, [status]);
 
@@ -122,8 +131,22 @@ export function GamePage() {
   };
 
   const handleGameWin = async () => {
-    if (!user) return;
     const timeMs = endTime && startTime ? endTime - startTime : elapsedMs;
+
+    // Guest mode: save locally
+    if (!user && isGuest) {
+      const rawCoins = COIN_REWARDS[`WIN_${difficulty.toUpperCase()}` as keyof typeof COIN_REWARDS] as number | undefined;
+      const coinsEarned = Math.max(COIN_REWARDS.MIN_WIN, rawCoins ?? COIN_REWARDS.WIN_EASY);
+      addGuestCoins(coinsEarned);
+      addGuestHistory({ difficulty, result: 'win', time_ms: timeMs, played_at: new Date().toISOString() });
+      play('coin');
+      setCoinAnimation({ amount: coinsEarned, show: true });
+      setTimeout(() => setCoinAnimation(c => ({ ...c, show: false })), 2000);
+      toast.success(`🎉 Победа! +${coinsEarned} монет`, { duration: 3000 });
+      return;
+    }
+
+    if (!user) return;
 
     // Save daily challenge result before anything else (idempotent RPC)
     if (isDailyRef.current && dailyDateRef.current) {
@@ -300,12 +323,17 @@ export function GamePage() {
                 <div className="text-5xl mb-2">
                   {status === 'won' ? '🏆' : '💥'}
                 </div>
+                {status === 'won' && (profile?.username || guestName) && (
+                  <p className="text-xs font-semibold mb-1 tracking-wide uppercase" style={{ color: 'var(--accent)' }}>
+                    {profile?.username || guestName}
+                  </p>
+                )}
                 <h2 className="text-xl font-black mb-1" style={{ color: 'var(--text-primary)' }}>
                   {status === 'won' ? 'Победа!' : 'Мина!'}
                 </h2>
                 <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
                   {status === 'won'
-                    ? `Время: ${Math.floor(elapsedMs / 1000)}с`
+                    ? `Время: ${Math.floor(elapsedMs / 1000)}с · ${difficulty}`
                     : 'Не повезло. Попробуйте ещё раз!'}
                 </p>
                 {coinAnimation.show && (
@@ -313,13 +341,24 @@ export function GamePage() {
                     +{coinAnimation.amount} 🪙
                   </div>
                 )}
-                <button
-                  onClick={() => { isDailyRef.current = false; dailyDateRef.current = null; initGame(difficulty); }}
-                  className="btn-primary"
-                >
-                  <RotateCcw size={16} />
-                  Играть снова
-                </button>
+                <div className="flex gap-2 justify-center flex-wrap">
+                  <button
+                    onClick={() => { isDailyRef.current = false; dailyDateRef.current = null; initGame(difficulty); }}
+                    className="btn-primary"
+                  >
+                    <RotateCcw size={16} />
+                    Играть снова
+                  </button>
+                  {status === 'won' && user && (
+                    <button
+                      onClick={() => navigate('/profile')}
+                      className="btn-sage"
+                    >
+                      <Trophy size={16} />
+                      Рейтинг
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
@@ -332,7 +371,7 @@ export function GamePage() {
             <div className="lg:hidden space-y-4">
               <AICoachPanel />
               <Statistics stats={stats} loading={statsLoading} />
-              <History history={history} />
+              <History history={isGuest ? guestHistory : history} />
               <DailyChallenge userId={user?.id} onPlay={handleDailyPlay} />
             </div>
           </div>

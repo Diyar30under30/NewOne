@@ -1,49 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Board } from '../components/Board';
 import { Timer } from '../components/Timer';
 import { DailyChallenge } from '../components/DailyChallenge';
 import { useGameStore } from '../store/gameStore';
 import { useAuth } from '../hooks/useAuth';
+import { useGuestStore } from '../store/guestStore';
 import { supabase } from '../lib/supabaseClient';
 import { getDailySeed } from '../lib/utils/gameEngine';
-import { DAILY_CHALLENGE_CONFIG, COIN_REWARDS } from '../lib/utils/constants';
+import { COIN_REWARDS } from '../lib/utils/constants';
 import { format } from 'date-fns';
-import { Calendar, Trophy } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export function DailyPage() {
   const { initGame, status, elapsedMs, endTime, startTime } = useGameStore();
   const { user, profile, refreshProfile } = useAuth();
+  const guestStore = useGuestStore();
   const [playing, setPlaying] = useState(false);
-  const [finished, setFinished] = useState(false);
 
   const today = format(new Date(), 'yyyy-MM-dd');
   const seed = getDailySeed(today);
+  const effectiveUserId = user?.id ?? (guestStore.isGuest ? guestStore.guestId : undefined);
 
   const handlePlay = (s: number) => {
     initGame('custom', s);
     setPlaying(true);
-    setFinished(false);
   };
 
   const handleCellOpen = async (hitMine: boolean, won: boolean) => {
     if (!won && !hitMine) return;
-    setFinished(true);
     setPlaying(false);
 
-    if (won && user) {
-      const timeMs = endTime && startTime ? endTime - startTime : elapsedMs;
-      await supabase.from('daily_results').insert({
-        user_id: user.id,
-        date: today,
-        time_ms: timeMs,
-        finished_at: new Date().toISOString(),
-      });
-      await supabase.from('profiles')
-        .update({ coins: (profile?.coins ?? 0) + COIN_REWARDS.DAILY_CHALLENGE })
-        .eq('id', user.id);
-      await refreshProfile();
-      toast.success(`🎯 Daily Challenge пройден! +${COIN_REWARDS.DAILY_CHALLENGE} монет`);
+    const timeMs = endTime && startTime ? endTime - startTime : elapsedMs;
+
+    if (won) {
+      if (user) {
+        // Authenticated: save to Supabase
+        await supabase.from('daily_results').insert({
+          user_id: user.id,
+          date: today,
+          time_ms: timeMs,
+          finished_at: new Date().toISOString(),
+        }).then(() => {});
+        await supabase.from('profiles')
+          .update({ coins: (profile?.coins ?? 0) + COIN_REWARDS.DAILY_CHALLENGE })
+          .eq('id', user.id);
+        await refreshProfile();
+        toast.success(`🎯 Daily Challenge пройден! +${COIN_REWARDS.DAILY_CHALLENGE} монет`);
+      } else if (guestStore.isGuest) {
+        // Guest: save to localStorage
+        const doneKey = `daily_done_${today}`;
+        if (!localStorage.getItem(doneKey)) {
+          localStorage.setItem(doneKey, '1');
+          guestStore.addCoins(COIN_REWARDS.DAILY_CHALLENGE);
+          guestStore.addHistory({ difficulty: 'custom', result: 'win', time_ms: timeMs, played_at: new Date().toISOString() });
+          toast.success(`🎯 Daily Challenge пройден! +${COIN_REWARDS.DAILY_CHALLENGE} монет`);
+        } else {
+          toast.success(`Отличное время: ${Math.floor(timeMs / 1000)}с`);
+        }
+      }
     } else if (hitMine) {
       toast.error('Мина! Daily Challenge провален');
     }
@@ -59,12 +74,12 @@ export function DailyPage() {
           <div>
             <h1 className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>Daily Challenge</h1>
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-              {format(new Date(), 'd MMMM yyyy')} • Одна попытка для всех
+              {format(new Date(), 'd MMMM yyyy')} · Одна попытка для всех
             </p>
           </div>
         </div>
 
-        {playing && (
+        {playing ? (
           <>
             <div className="game-card flex items-center justify-between">
               <div>
@@ -83,10 +98,8 @@ export function DailyPage() {
             )}
             <Board onCellOpen={handleCellOpen} />
           </>
-        )}
-
-        {!playing && (
-          <DailyChallenge userId={user?.id} onPlay={handlePlay} />
+        ) : (
+          <DailyChallenge userId={effectiveUserId} onPlay={handlePlay} />
         )}
       </div>
     </div>
