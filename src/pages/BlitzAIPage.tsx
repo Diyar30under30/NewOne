@@ -322,12 +322,13 @@ export default function BlitzAIPage() {
 
   const resetGame = useCallback(() => {
     stopTimers();
+    gameOverRef.current = false;
+    prevFirstClick.current = true;
     setPlayer(makeInitialState());
     setAI(makeInitialState());
     setElapsed(0);
     setGameOver(false);
     setWinner(null);
-    prevFirstClick.current = true;
   }, [stopTimers]);
 
   useEffect(() => () => stopTimers(), [stopTimers]);
