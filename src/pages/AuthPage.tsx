@@ -99,22 +99,22 @@ export function AuthPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ background: 'var(--bg-primary)' }}>
-      {/* Decorative background orbs */}
-      <div className="absolute top-1/4 left-1/4 w-80 h-80 rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%)', filter: 'blur(40px)' }} />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+      {/* Soft decorative blobs */}
+      <div className="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none opacity-40"
+        style={{ background: 'radial-gradient(circle, rgba(196,119,90,0.18) 0%, transparent 70%)', filter: 'blur(60px)', transform: 'translate(30%, -30%)' }} />
+      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full pointer-events-none opacity-40"
+        style={{ background: 'radial-gradient(circle, rgba(122,158,122,0.2) 0%, transparent 70%)', filter: 'blur(60px)', transform: 'translate(-30%, 30%)' }} />
 
       <div className="max-w-md w-full relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl text-4xl mb-4 mx-auto"
-            style={{ background: 'var(--gradient-brand)', boxShadow: '0 8px 32px var(--accent-glow)' }}>
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl text-4xl mb-5 mx-auto"
+            style={{ background: 'var(--gradient-brand)', boxShadow: '0 8px 28px var(--accent-glow)' }}>
             💣
           </div>
-          <h1 className="text-3xl font-black gradient-text mb-1">Minesweeper Pro</h1>
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-            {mode === 'signin' ? 'Рады снова видеть вас!' :
+          <h1 className="serif-heading text-3xl gradient-text mb-1">Minesweeper Pro</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+            {mode === 'signin' ? 'Рады снова видеть вас' :
              mode === 'signup' ? 'Создайте аккаунт бесплатно' :
              'Восстановление пароля'}
           </p>

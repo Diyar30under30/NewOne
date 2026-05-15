@@ -1,33 +1,46 @@
-/* ===== CLASSIC SKIN (default) ===== */
+/* ══════════════════════════════════════════════
+   CLASSIC SKIN — Soft Aesthetic
+══════════════════════════════════════════════ */
 .skin-classic .cell-closed {
-  background: linear-gradient(145deg, #1e3a5f 0%, #152c4a 100%);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4), 0 1px 0 rgba(56,189,248,0.1) inset;
-  transition: background 0.1s ease, box-shadow 0.1s ease;
+  background: linear-gradient(145deg, #EDE4D6, #E0D3C0);
+  border: 1px solid #D4C8B4;
+  box-shadow:
+    0 2px 4px rgba(80, 50, 30, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset;
+  border-radius: 5px;
+  transition: background 0.1s ease, box-shadow 0.1s ease, transform 0.08s ease;
 }
 .skin-classic .cell-closed:hover {
-  background: linear-gradient(145deg, #264a75 0%, #1a3a62 100%);
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 2px 12px rgba(56,189,248,0.15), 0 1px 0 rgba(56,189,248,0.15) inset;
+  background: linear-gradient(145deg, #E5D8C5, #D5C5AE);
+  box-shadow:
+    0 3px 8px rgba(80, 50, 30, 0.16),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
+.skin-classic .cell-closed:active { transform: scale(0.94); }
 .skin-classic .cell-open {
-  background: rgba(10, 22, 40, 0.8);
-  border: 1px solid rgba(30, 58, 95, 0.5);
+  background: #F5F0E8;
+  border: 1px solid #E2D8CC;
+  border-radius: 5px;
+}
+.skin-classic .cell-flag  { color: #C4775A; }
+.skin-classic .cell-mine  { color: #3D2C1E; }
+
+/* Dark variant */
+.theme-dark .skin-classic .cell-closed {
+  background: linear-gradient(145deg, #3A2E24, #2E2418);
+  border: 1px solid rgba(196, 119, 90, 0.22);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset;
+}
+.theme-dark .skin-classic .cell-closed:hover {
+  background: linear-gradient(145deg, #4A3C30, #3C3025);
+  border-color: rgba(196, 119, 90, 0.4);
+}
+.theme-dark .skin-classic .cell-open {
+  background: rgba(26, 18, 10, 0.8);
+  border: 1px solid rgba(80, 50, 30, 0.4);
 }
 
-.theme-light .skin-classic .cell-closed {
-  background: linear-gradient(145deg, #bfdbfe, #93c5fd);
-  border: 1px solid rgba(147, 197, 253, 0.8);
-  box-shadow: 0 2px 4px rgba(14,165,233,0.15), 0 1px 0 rgba(255,255,255,0.6) inset;
-}
-.theme-light .skin-classic .cell-closed:hover {
-  background: linear-gradient(145deg, #93c5fd, #60a5fa);
-  border-color: rgba(96, 165, 250, 0.8);
-}
-.theme-light .skin-classic .cell-open {
-  background: rgba(219, 234, 254, 0.6);
-  border: 1px solid rgba(147, 197, 253, 0.6);
-}
+
 
 /* ===== CYBERPUNK SKIN ===== */
 .skin-cyberpunk .cell-closed {
