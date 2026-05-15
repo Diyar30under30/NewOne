@@ -54,11 +54,11 @@ function Header() {
           💣
         </div>
         <div className="hidden sm:block">
-          <span className="serif-heading text-base leading-none" style={{ color: 'var(--text-primary)' }}>
+          <span className="lucky-heading text-xl leading-none" style={{ color: 'var(--text-primary)' }}>
             Minesweeper
           </span>
-          <span className="ml-1.5 text-xs font-bold tracking-widest uppercase px-1.5 py-0.5 rounded-full"
-            style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}>
+          <span className="ml-2 text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded-full"
+            style={{ background: 'var(--accent-dim)', color: 'var(--accent)', fontFamily: "'DM Sans', sans-serif" }}>
             Pro
           </span>
         </div>
@@ -67,7 +67,7 @@ function Header() {
       {/* Right */}
       <div className="flex items-center gap-2">
         {(profile || isGuest) && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-sm font-semibold"
+          <div className="flex items-center gap-1.5 px-3 py-2 rounded-2xl font-bold text-base"
             style={{ background: 'rgba(196,119,90,0.1)', border: '1px solid rgba(196,119,90,0.2)', color: 'var(--accent)' }}>
             🪙 <span>{(profile?.coins ?? guestCoins).toLocaleString()}</span>
           </div>
@@ -165,8 +165,8 @@ function BottomNav() {
             >
               {icon}
             </div>
-            <span className="text-[10px] font-semibold transition-colors"
-              style={{ color: isActive ? 'var(--accent)' : 'var(--text-faint)' }}>
+            <span className="text-[11px] font-bold transition-colors tracking-wide"
+              style={{ color: isActive ? 'var(--accent)' : 'var(--text-faint)', fontFamily: "'DM Sans', sans-serif" }}>
               {label}
             </span>
           </NavLink>

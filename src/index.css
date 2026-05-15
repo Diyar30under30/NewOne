@@ -6,8 +6,13 @@
 
 @layer base {
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { margin: 0; min-height: 100vh; overflow-x: hidden; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    margin: 0; min-height: 100vh; overflow-x: hidden;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
   .no-context-menu {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -19,12 +24,13 @@
 
   /* ─── Primary Button (Terracotta) ─── */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-white
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-semibold text-white
            transition-all duration-200 active:scale-95 focus:outline-none relative overflow-hidden;
     font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
     background: var(--gradient-brand);
     box-shadow: 0 4px 16px var(--accent-glow), 0 1px 0 rgba(255,255,255,0.15) inset;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.03em;
   }
   .btn-primary::after {
     content: '';
@@ -43,9 +49,10 @@
 
   /* ─── Sage Button ─── */
   .btn-sage {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-white
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-semibold text-white
            transition-all duration-200 active:scale-95 focus:outline-none;
     font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
     background: var(--gradient-sage);
     box-shadow: 0 4px 16px rgba(122, 158, 122, 0.3);
   }
@@ -53,9 +60,10 @@
 
   /* ─── Secondary Button ─── */
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl font-semibold
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-semibold
            transition-all duration-200 active:scale-95 focus:outline-none border;
     font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
     background: var(--bg-card);
     color: var(--text-secondary);
     border-color: var(--border-color);
@@ -77,6 +85,7 @@
   .game-card {
     @apply rounded-3xl p-5 border relative;
     font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
     background: var(--bg-card);
     border-color: var(--border-color);
     box-shadow: var(--card-shadow);
@@ -97,7 +106,8 @@
 
   /* ─── Input ─── */
   .input-field {
-    @apply w-full px-4 py-3 rounded-2xl border outline-none transition-all duration-200 text-sm;
+    @apply w-full px-4 py-3 rounded-2xl border outline-none transition-all duration-200;
+    font-size: 1rem;
     font-family: 'DM Sans', sans-serif;
     background: var(--bg-secondary);
     color: var(--text-primary);
@@ -129,10 +139,18 @@
   }
 }
 
-/* ─── Serif headings ─── */
+/* ─── Luckiest Guy headings ─── */
 .serif-heading {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 600;
+  font-family: 'Luckiest Guy', 'DM Sans', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.lucky-heading {
+  font-family: 'Luckiest Guy', 'DM Sans', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
 }
 
 /* ─── Gradient text ─── */
@@ -164,14 +182,14 @@
 }
 
 /* ─── Number colors — warm toned ─── */
-.num-1 { color: #5B8DD9; font-weight: 800; }
-.num-2 { color: #5D9E6A; font-weight: 800; }
-.num-3 { color: #C4775A; font-weight: 800; }
-.num-4 { color: #8B6BB5; font-weight: 800; }
-.num-5 { color: #C06040; font-weight: 800; }
-.num-6 { color: #4A9BAE; font-weight: 800; }
-.num-7 { color: #4A3C30; font-weight: 800; }
-.num-8 { color: #9A8070; font-weight: 800; }
+.num-1 { color: #5B8DD9; font-weight: 900; font-family: 'Luckiest Guy', sans-serif; letter-spacing: 0; }
+.num-2 { color: #5D9E6A; font-weight: 900; font-family: 'Luckiest Guy', sans-serif; letter-spacing: 0; }
+.num-3 { color: #C4775A; font-weight: 900; font-family: 'Luckiest Guy', sans-serif; letter-spacing: 0; }
+.num-4 { color: #8B6BB5; font-weight: 900; font-family: 'Luckiest Guy', sans-serif; letter-spacing: 0; }
+.num-5 { color: #C06040; font-weight: 900; font-family: 'Luckiest Guy', sans-serif; letter-spacing: 0; }
+.num-6 { color: #4A9BAE; font-weight: 900; font-family: 'Luckiest Guy', sans-serif; letter-spacing: 0; }
+.num-7 { color: #4A3C30; font-weight: 900; font-family: 'Luckiest Guy', sans-serif; letter-spacing: 0; }
+.num-8 { color: #9A8070; font-weight: 900; font-family: 'Luckiest Guy', sans-serif; letter-spacing: 0; }
 
 .theme-dark .num-1 { color: #7AAAE8; }
 .theme-dark .num-2 { color: #7ABE8A; }
