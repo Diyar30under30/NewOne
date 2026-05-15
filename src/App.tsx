@@ -8,10 +8,12 @@ import { ProfilePage } from './pages/ProfilePage';
 import { MultiplayerPage } from './pages/MultiplayerPage';
 import { StorePage } from './pages/StorePage';
 import { DailyPage } from './pages/DailyPage';
+import SetupPage from './pages/SetupPage';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { useAuth } from './hooks/useAuth';
 import { useTheme } from './hooks/useTheme';
 import { useUIStore } from './store/uiStore';
+import { isSupabaseConfigured } from './lib/supabaseClient';
 import {
   Gamepad2, Users, ShoppingBag, Calendar, User, LogIn, Coins, Volume2, VolumeX
 } from 'lucide-react';
@@ -229,6 +231,10 @@ function AuthCallbackPage() {
 }
 
 export default function App() {
+  if (!isSupabaseConfigured) {
+    return <SetupPage />;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter basename={import.meta.env.VITE_BASE_PATH || '/'}>
